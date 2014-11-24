@@ -158,6 +158,7 @@ echo "set direct vpn server route: ($GIF3 percent)"
 echo "XXX"
 #
 ### run //
+/sbin/route delete -host $EASYIPSECSERVERIPVALUE 2>&1 > /dev/null
 /sbin/route add -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
 ### // run
 #
