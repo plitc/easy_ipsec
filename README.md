@@ -7,8 +7,11 @@ https://blog.plitc.eu/2014/freebsd-10-ipv4-vpn-relay-ipsec-entryopenvpn-middleop
 
 Dependencies
 ============
-* brew       (MacOS)
-* dialog     (MacOS)
+* brew               (MacOS)
+* dialog             (MacOS)
+* tunnelblick        (MacOS optional)
+* racoon/ipsec-tools (FreeBSD)
+* openvpn            (FreeBSD)
 
 Features
 ========
@@ -17,6 +20,7 @@ Features
 Platform
 ========
 * MacOS X
+* FreeBSD
 
 Usage
 =====
@@ -24,5 +28,5 @@ Usage
 
 Errata
 ======
-* failed after delete system-logs
+* failed after delete system-logs (MacOS)
 
