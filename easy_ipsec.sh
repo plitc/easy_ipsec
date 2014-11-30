@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 #
 ### LICENSE // ###
 #
@@ -564,8 +564,14 @@ if [ -z $FRACOON ]; then
    echo "<--- --- --->"
    echo "need racoon/ipsec-tools"
    echo "<--- --- --->"
+   # (
         cd /usr/ports/security/ipsec-tools/ && make install clean
+   # )
    echo "<--- --- --->"
+   ### break // ###
+   echo ""
+   read "Press [Enter] key to continue..."
+   ### // break ###
 else
    echo "" # dummy
 fi
@@ -574,8 +580,14 @@ if [ -z $FOPENVPN ]; then
    echo "<--- --- --->"
    echo "need openvpn"
    echo "<--- --- --->"
+   # (
         cd /usr/ports/security/openvpn/ && make install clean
+   # )
    echo "<--- --- --->"
+   ### break // ###
+   echo ""
+   read "Press [Enter] key to continue..."
+   ### // break ###
 else
    echo "" # dummy
 fi
@@ -656,7 +668,7 @@ echo "set direct vpn server route: ($GIF3 percent)"
 echo "XXX"
 #
 ### run //
-/sbin/route delete -host $EASYIPSECSERVERIPVALUE 2>&1 > /dev/null
+/sbin/route del -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
 /sbin/route add -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
 ### // run
 #
@@ -686,16 +698,16 @@ fi
 #
 ### // check vpn server
 
-/bin/mkdir -p /etc/racoon
-/bin/mkdir -p /etc/racoon/certs
-/bin/chmod 0700 /etc/racoon/certs
+/bin/mkdir -p /usr/local/etc/racoon
+/bin/mkdir -p /usr/local/etc/racoon/certs
+/bin/chmod 0700 /usr/local/etc/racoon/certs
 
-### modify /etc/racoon/setkey.conf //
+### modify /usr/local/etc/racoon/setkey.conf //
 #
 (
-EASYIPSECGETIFIP=$(/usr/sbin/netstat -rn -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $6}' | xargs -L1 ifconfig | grep -w "inet" | awk '{print $2}')
+EASYIPSECGETIFIP=$(/usr/bin/netstat -rnW -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $7}' | xargs -L1 ifconfig | grep -w "inet" | awk '{print $2}')
 
-/bin/cat <<SETKEY > /etc/racoon/setkey.conf
+/bin/cat <<SETKEY > /usr/local/etc/racoon/setkey.conf
 ### ### ### PLITC // ### ### ###
 #
 flush;
@@ -713,11 +725,11 @@ spdadd $EASYIPSECDESTNETVALUE/24 $EASYIPSECCLIENTIPVALUE/32 any -P in ipsec
 SETKEY
 )
 #
-/bin/chmod 0600 /etc/racoon/setkey.conf
+/bin/chmod 0600 /usr/local/etc/racoon/setkey.conf
 #
-### // modify /etc/racoon/setkey.conf
+### // modify /usr/local/etc/racoon/setkey.conf
 
-### modify /etc/racoon/psk.txt //
+### modify /usr/local/etc/racoon/psk.txt //
 #
 (
 EASYIPSECSERVERPSK="/tmp/easy_ipsec_server_psk.txt"
@@ -728,18 +740,8 @@ dialog --inputbox "Enter your VPN IPsec Server Pre-shared key: (without spaces a
 
 EASYIPSECSERVERPSKVALUE=$(/bin/cat $EASYIPSECSERVERPSK | sed 's/#//g' | sed 's/%//g')
 
-/bin/cat <<PSK > /etc/racoon/psk.txt
+/bin/cat <<PSK > /usr/local/etc/racoon/psk.txt
 ### ### ### PLITC ### ### ###
-# IPv4/v6 addresses
-# 10.160.94.3	asecretkeygoeshere
-# 172.16.1.133	asecretkeygoeshere
-# 3ffe:501:410:ffff:200:86ff:fe05:80fa	asecretkeygoeshere
-# 3ffe:501:410:ffff:210:4bff:fea2:8baa	asecretkeygoeshere
-# USER_FQDN
-# macuser@localhost	somethingsecret
-# FQDN
-# kame		hoge
-### ### ### ##### ### ### ###
 #
 $EASYIPSECSERVERIPVALUE $EASYIPSECSERVERPSKVALUE
 #
@@ -747,24 +749,24 @@ $EASYIPSECSERVERIPVALUE $EASYIPSECSERVERPSKVALUE
 # EOF
 PSK
 
-/bin/chmod 0600 /etc/racoon/psk.txt
+/bin/chmod 0600 /usr/local/etc/racoon/psk.txt
 /bin/rm $EASYIPSECSERVERPSK
 )
 #
-### // modify /etc/racoon/psk.txt
+### // modify /usr/local/etc/racoon/psk.txt
 
-### modify /etc/racoon/racoon.conf //
+### modify /usr/local/etc/racoon/racoon.conf //
 #
-EASYIPSECGETIFIPCONF=$(/usr/sbin/netstat -rn -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $6}' | xargs -L1 ifconfig | grep -w "inet" | awk '{print $2}')
+EASYIPSECGETIFIPCONF=$(/usr/bin/netstat -rnW -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $7}' | xargs -L1 ifconfig | grep -w "inet" | awk '{print $2}')
 #
 (
-/bin/cat <<CONF > /etc/racoon/racoon.conf
+/bin/cat <<CONF > /usr/local/etc/racoon/racoon.conf
 ### ### ### PLITC ### ### ###
 #
-path include "/etc/racoon" ;
-path pre_shared_key "/etc/racoon/psk.txt" ;
-path certificate "/etc/cert" ;
-log debug;
+path    include "/usr/local/etc/racoon";
+path    certificate "/usr/local/etc/racoon/certs";      #location of cert files
+path    pre_shared_key "/usr/local/etc/racoon/psk.txt"; #location of pre-shared key file
+log     debug;                                          #log verbosity setting: set to 'notify' when testing and debugging is complete
 #
 ### ### ### ##### ### ### ###
 
@@ -846,20 +848,19 @@ sainfo (address $EASYIPSECCLIENTIPVALUE/32 any address $EASYIPSECDESTNETVALUE/24
 CONF
 )
 #
-/bin/chmod 0600 /etc/racoon/racoon.conf
+/bin/chmod 0600 /usr/local/etc/racoon/racoon.conf
 #
-### // modify /etc/racoon/racoon.conf
+### // modify /usr/local/etc/racoon/racoon.conf
 
 ### start ipsec //
 #
 (
-dialog --title "Delete all System-Logs" --backtitle "Delete all System-Logs" --yesno "syslog can be very slow, do you want delete all system logs before ?" 7 60
+dialog --title "Delete Racoon-Logs" --backtitle "Delete Racoon-Logs" --yesno "syslog can be very slow, do you want delete racoon logs before ?" 7 60
 
 response=$?
 case $response in
    0)
-      #/bin/rm -rf /private/var/log/asl/*.asl
-      /usr/sbin/aslmanager -size 1
+      /bin/echo "" > /var/log/racoon.log
       /bin/echo ""
       /bin/echo "System-Logs deleted!"
 ;;
@@ -873,22 +874,17 @@ case $response in
 ;;
 esac
 #
-#/bin/launchctl stop com.apple.syslog
-#sleep 1
-#/bin/launchctl start com.apple.syslog
-#
 )
 #
 (
 /bin/echo ""
 /bin/echo "Starting IPsec"
-/usr/sbin/setkey -f /etc/racoon/setkey.conf
 sleep 1
-/bin/launchctl stop com.apple.racoon
-/bin/launchctl stop com.apple.ipsec
+/usr/sbin/service racoon stop
+/usr/sbin/service ipsec stop
 sleep 1
-/bin/launchctl start com.apple.ipsec
-/bin/launchctl start com.apple.racoon
+/usr/sbin/service ipsec start
+/usr/sbin/service racoon start
 sleep 1
 /bin/echo ""
 /bin/echo "prepare racoon log ... wait a minute"
@@ -896,7 +892,7 @@ sleep 1
 sleep 15
 )
 #
-/usr/bin/syslog -k Facility -k Sender racoon | tail -n 100 | grep "established" > /tmp/easy_ipsec_racoon_log.txt
+/usr/bin/tail -n 100 | egrep "established|WARNING" > /tmp/easy_ipsec_racoon_log.txt
 #
 RACOONLOG="/tmp/easy_ipsec_racoon_log.txt"
 #
@@ -1014,7 +1010,7 @@ dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Ne
 /sbin/route add -net 0.0.0.0/1 $EASYIPSECSERVEROVPNTESTVALUE 2>&1 > /dev/null
 #
 ###
-/usr/sbin/netstat -rn -f inet > $EASYIPSECNETSTATOVPN
+/usr/bin/netstat -rn -f inet > $EASYIPSECNETSTATOVPN
 ###
 #
 dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
