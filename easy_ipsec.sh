@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/sh
 #
 ### LICENSE // ###
 #
@@ -880,9 +880,11 @@ esac
 /bin/echo ""
 /bin/echo "Starting IPsec"
 sleep 1
+/bin/echo ""
 /usr/sbin/service racoon stop
 /usr/sbin/service ipsec stop
 sleep 1
+/bin/echo ""
 /usr/sbin/service ipsec start
 /usr/sbin/service racoon start
 sleep 1
@@ -892,7 +894,7 @@ sleep 1
 sleep 15
 )
 #
-/usr/bin/tail -n 100 | egrep "established|WARNING" > /tmp/easy_ipsec_racoon_log.txt
+/usr/bin/tail -n 100 /var/log/racoon.log | egrep "established|WARNING" > /tmp/easy_ipsec_racoon_log.txt
 #
 RACOONLOG="/tmp/easy_ipsec_racoon_log.txt"
 #
