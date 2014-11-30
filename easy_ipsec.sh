@@ -898,7 +898,7 @@ sleep 1
 EASYIPSECSERVERTEST="/tmp/easy_ipsec_server_test.txt"
 touch $EASYIPSECSERVERTEST
 /bin/chmod 0600 $EASYIPSECSERVERTEST
-   
+
 dialog --inputbox "Enter your VPN IPsec Server forwarding interface IP: (for example 172.31.254.254)" 8 85 2>$EASYIPSECSERVERTEST
 
 EASYIPSECSERVERTESTVALUE=$(/bin/cat $EASYIPSECSERVERTEST | sed 's/#//g' | sed 's/%//g')
@@ -914,7 +914,7 @@ else
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
       exit 3
-fi        
+fi
 )
 #
 ### // ipsec test
