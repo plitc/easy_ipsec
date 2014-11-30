@@ -592,6 +592,11 @@ else
    echo "" # dummy
 fi
 
+(
+# clean up
+/bin/rm -rf /tmp/easy_ipsec*.txt
+)
+
 ### stage2 // ###
 
 GIF1=50
@@ -668,6 +673,9 @@ echo "set direct vpn server route: ($GIF3 percent)"
 echo "XXX"
 #
 ### run //
+# clean up double entries on (RADIX_MPATH) equal-cost multi-path routing (ecmp) systems
+/usr/bin/netstat -rn -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route del -host "$EASYIPSECSERVERIPVALUE" 2>&1 > /dev/null
+#
 /sbin/route del -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
 /sbin/route add -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
 ### // run
