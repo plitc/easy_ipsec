@@ -889,20 +889,8 @@ sleep 1
 /usr/sbin/service racoon start
 sleep 1
 /bin/echo ""
-/bin/echo "prepare racoon log ... wait a minute"
-/bin/echo ""
-sleep 15
 )
 #
-/usr/bin/tail -n 100 /var/log/racoon.log | egrep "established|WARNING" > /tmp/easy_ipsec_racoon_log.txt
-#
-RACOONLOG="/tmp/easy_ipsec_racoon_log.txt"
-#
-(
-dialog --textbox "$RACOONLOG" 0 0
-)
-#
-### // start ipsec
 
 ### ipsec test //
 #
@@ -910,7 +898,7 @@ dialog --textbox "$RACOONLOG" 0 0
 EASYIPSECSERVERTEST="/tmp/easy_ipsec_server_test.txt"
 touch $EASYIPSECSERVERTEST
 /bin/chmod 0600 $EASYIPSECSERVERTEST
-
+   
 dialog --inputbox "Enter your VPN IPsec Server forwarding interface IP: (for example 172.31.254.254)" 8 85 2>$EASYIPSECSERVERTEST
 
 EASYIPSECSERVERTESTVALUE=$(/bin/cat $EASYIPSECSERVERTEST | sed 's/#//g' | sed 's/%//g')
@@ -926,11 +914,27 @@ else
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
       exit 3
-fi
+fi        
 )
-/bin/rm -rf $EASYIPSECSERVERTEST
 #
 ### // ipsec test
+
+/bin/echo ""
+/bin/echo "prepare racoon log ... wait a minute"
+/bin/echo ""
+sleep 15
+
+/bin/cat /var/log/racoon.log | egrep "established|WARNING" > /tmp/easy_ipsec_racoon_log.txt
+#
+RACOONLOG="/tmp/easy_ipsec_racoon_log.txt"
+#
+(
+dialog --textbox "$RACOONLOG" 0 0
+)
+#
+/bin/rm -rf $EASYIPSECSERVERTEST
+#
+### // start ipsec
 
 ### // stage2 ###
 
