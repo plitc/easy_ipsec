@@ -924,7 +924,7 @@ fi
 /bin/echo ""
 sleep 15
 
-/bin/cat /var/log/racoon.log | egrep "established|WARNING" > /tmp/easy_ipsec_racoon_log.txt
+/bin/cat /var/log/racoon.log | egrep "established|WARNING" | tail -n 10 > /tmp/easy_ipsec_racoon_log.txt
 #
 RACOONLOG="/tmp/easy_ipsec_racoon_log.txt"
 #
