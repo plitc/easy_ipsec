@@ -1,5 +1,5 @@
-#!/bin/sh
-#
+#!/bin/sh -x
+
 ### LICENSE // ###
 #
 # Copyright (c) 2014, Daniel Plominski (Plominski IT Consulting)
@@ -27,32 +27,27 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 ### // LICENSE ###
-#
+
 ### ### ### PLITC ### ### ###
 
 
 ### stage0 // ###
-#
 UNAME=$(uname)
 MYNAME=$(whoami)
-#
 ### // stage0 ###
 
 ### stage1 // ###
-#
 case $UNAME in
 Darwin)
    ### MacOS ###
-#
 BREW=$(/usr/bin/which brew)
 MDIALOG=$(/usr/bin/which dialog)
 LASTUSER=$(/usr/bin/last | head -n 1 | awk '{print $1}')
-#LASTGROUP0=$(/usr/bin/id $LASTUSER | awk '{print $2}' | sed 's/[^0-9]*//g')
-LASTGROUP=$(/usr/bin/id $LASTUSER | grep -o 'gid=[^(]*[^)]*)' | sed 's/[0-9]//g' | sed 's/gid=(//g' | sed 's/)//g')
+LASTGROUP=$(/usr/bin/id "$LASTUSER" | grep -o 'gid=[^(]*[^)]*)' | sed 's/[0-9]//g' | sed 's/gid=(//g' | sed 's/)//g')
 #
 ### ### ### ### ### ### ### ### ###
 
-if [ $MYNAME = root ]; then
+if [ "$MYNAME" = root ]; then
    echo "" # dummy
 else
    echo "<--- --- --->"
@@ -61,7 +56,7 @@ else
    exit 1
 fi
 
-if [ -z $BREW ]; then
+if [ -z "$BREW" ]; then
    echo "<--- --- --->"
    echo "need homebrew"
    echo "<--- --- --->"
@@ -71,12 +66,12 @@ else
    echo "" # dummy
 fi
 
-if [ -z $MDIALOG ]; then
+if [ -z "$MDIALOG" ]; then
    echo "<--- --- --->"
    echo "need dialog"
    echo "<--- --- --->"
         /usr/sbin/chown -R "$LASTUSER:$LASTGROUP" /usr/local
-        sudo -u $LASTUSER -s "/usr/local/bin/brew install dialog"
+        sudo -u "$LASTUSER" -s "/usr/local/bin/brew install dialog"
    echo "<--- --- --->"
 else
    echo "" # dummy
@@ -99,11 +94,11 @@ echo "create gif interface: ($GIF1 percent)"
 echo "XXX"
 #
 ### run //
-/sbin/ifconfig gif0 create 2>&1 > /dev/null
+/sbin/ifconfig gif0 create > /dev/null 2>&1
 /sbin/ifconfig gif0 up
 ### // run
 #
-GIF1=`expr $GIF1 + 50`
+GIF1=$(("$GIF1" + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "create gif interface" 20 70 0
@@ -118,8 +113,8 @@ touch $EASYIPSECDESTNET
 
 dialog --inputbox "Enter your VPN destination network: (for example 172.31.254.0)" 8 40 2>$EASYIPSECDESTNET
 
-EASYIPSECCLIENTIPVALUE=$(/bin/cat $EASYIPSECCLIENTIP | sed 's/#//g' | sed 's/%//g')
-EASYIPSECDESTNETVALUE=$(/bin/cat $EASYIPSECDESTNET | sed 's/#//g' | sed 's/%//g')
+EASYIPSECCLIENTIPVALUE=$(sed 's/#//g' $EASYIPSECCLIENTIP | sed 's/%//g')
+EASYIPSECDESTNETVALUE=$(sed 's/#//g' $EASYIPSECDESTNET | sed 's/%//g')
 
 GIF2=50
 (
@@ -131,11 +126,11 @@ echo "set gif options: ($GIF2 percent)"
 echo "XXX"
 #
 ### run //
-/sbin/ifconfig gif0 $EASYIPSECCLIENTIPVALUE $EASYIPSECDESTNETVALUE
-/sbin/route add -net $EASYIPSECDESTNETVALUE/24 -interface gif0 2>&1 > /dev/null
+/sbin/ifconfig gif0 "$EASYIPSECCLIENTIPVALUE" "$EASYIPSECDESTNETVALUE"
+/sbin/route add -net "$EASYIPSECDESTNETVALUE"/24 -interface gif0 > /dev/null 2>&1
 ### // run
 #
-GIF2=`expr $GIF2 + 50`
+GIF2=$(("$GIF2" + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set gif options" 20 70 0
@@ -150,8 +145,8 @@ touch $EASYIPSECLOCALGATEWAY
 
 dialog --inputbox "Enter your local gateway IP:" 8 40 2>$EASYIPSECLOCALGATEWAY
 
-EASYIPSECSERVERIPVALUE=$(/bin/cat $EASYIPSECSERVERIP | sed 's/#//g' | sed 's/%//g')
-EASYIPSECLOCALGATEWAYVALUE=$(/bin/cat $EASYIPSECLOCALGATEWAY | sed 's/#//g' | sed 's/%//g')
+EASYIPSECSERVERIPVALUE=$(sed 's/#//g' $EASYIPSECSERVERIP | sed 's/%//g')
+EASYIPSECLOCALGATEWAYVALUE=$(sed 's/#//g' $EASYIPSECLOCALGATEWAY | sed 's/%//g')
 
 GIF3=50
 (
@@ -166,11 +161,11 @@ echo "XXX"
 # clean up double entries
 /usr/sbin/netstat -rn -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route delete -host "$EASYIPSECSERVERIPVALUE" 2>&1 > /dev/null
 #
-/sbin/route delete -host $EASYIPSECSERVERIPVALUE 2>&1 > /dev/null
-/sbin/route add -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
+/sbin/route delete -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
+/sbin/route add -host "$EASYIPSECSERVERIPVALUE" "$EASYIPSECLOCALGATEWAYVALUE" > /dev/null 2>&1
 ### // run
 #
-GIF3=`expr $GIF3 + 50`
+GIF3=$(("$GIF3" + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set direct vpn server route" 20 70 0
@@ -179,7 +174,7 @@ done
 #
 /bin/echo ""
 (
-/sbin/ping -q -c5 $EASYIPSECSERVERIPVALUE > /dev/null
+/sbin/ping -q -c5 "$EASYIPSECSERVERIPVALUE" > /dev/null
 
 if [ $? -eq 0 ]
 then
@@ -236,7 +231,7 @@ touch $EASYIPSECSERVERPSK
 
 dialog --inputbox "Enter your VPN IPsec Server Pre-shared key: (without spaces and pound)" 8 85 2>$EASYIPSECSERVERPSK
 
-EASYIPSECSERVERPSKVALUE=$(/bin/cat $EASYIPSECSERVERPSK | sed 's/#//g' | sed 's/%//g')
+EASYIPSECSERVERPSKVALUE=$(sed 's/#//g' $EASYIPSECSERVERPSK | sed 's/%//g')
 
 /bin/cat <<PSK > /etc/racoon/psk.txt
 ### ### ### PLITC ### ### ###
@@ -418,7 +413,7 @@ dialog --textbox "$RACOONLOG" 0 0
 
 ### ipsec test //
 #
-(
+#(
 EASYIPSECSERVERTEST="/tmp/easy_ipsec_server_test.txt"
 touch $EASYIPSECSERVERTEST
 /bin/chmod 0600 $EASYIPSECSERVERTEST
@@ -427,7 +422,7 @@ dialog --inputbox "Enter your VPN IPsec Server forwarding interface IP: (for exa
 
 EASYIPSECSERVERTESTVALUE=$(/bin/cat $EASYIPSECSERVERTEST | sed 's/#//g' | sed 's/%//g')
 
-/sbin/ping -q -c5 $EASYIPSECSERVERTESTVALUE > /dev/null
+/sbin/ping -q -c5 "$EASYIPSECSERVERTESTVALUE" > /dev/null
 
 if [ $? -eq 0 ]
 then
@@ -439,8 +434,8 @@ else
       /bin/echo "ERROR: server isn't responsive"
       exit 3
 fi
-)
-/bin/rm -rf $EASYIPSECSERVERTEST
+#)
+/bin/rm -rf "$EASYIPSECSERVERTEST"
 #
 ### // ipsec test
 
@@ -491,7 +486,7 @@ dialog --inputbox "Enter your VPN OpenVPN Server forwarding interface IP: (for e
 
 EASYIPSECSERVEROVPNTESTVALUE=$(/bin/cat $EASYIPSECSERVEROVPNTEST | sed 's/#//g' | sed 's/%//g')
 (
-/sbin/ping -q -c5 $EASYIPSECSERVEROVPNTESTVALUE > /dev/null
+/sbin/ping -q -c5 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null
 
 if [ $? -eq 0 ]
 then
@@ -504,7 +499,7 @@ else
       exit 5
 fi
 )
-##/bin/rm -rf $EASYIPSECSERVEROVPNTEST
+##/bin/rm -rf "$EASYIPSECSERVEROVPNTEST"
 #
 ### // openvpn server ###
 
@@ -516,15 +511,15 @@ touch $EASYIPSECNETSTATOVPN
 #
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "it seems to work, lets change the default gateway!" 8 70
 #
-/sbin/route delete default 2>&1 > /dev/null
-/sbin/route delete 128.0.0.0/1 2>&1 > /dev/null
-/sbin/route delete 0.0.0.0/1 2>&1 > /dev/null
+/sbin/route delete default > /dev/null 2>&1
+/sbin/route delete 128.0.0.0/1 > /dev/null 2>&1
+/sbin/route delete 0.0.0.0/1 > /dev/null 2>&1
 #
-/sbin/route add -net 128.0.0.0/1 $EASYIPSECSERVEROVPNTESTVALUE 2>&1 > /dev/null
-/sbin/route add -net 0.0.0.0/1 $EASYIPSECSERVEROVPNTESTVALUE 2>&1 > /dev/null
+/sbin/route add -net 128.0.0.0/1 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
+/sbin/route add -net 0.0.0.0/1 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
 #
 ###
-/usr/sbin/netstat -rn -f inet > $EASYIPSECNETSTATOVPN
+/usr/sbin/netstat -rn -f inet > "$EASYIPSECNETSTATOVPN"
 ###
 #
 dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
@@ -534,7 +529,7 @@ dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
 /bin/echo "Have a nice day with IPsec and OpenVPN"
 ###
 #
-/bin/rm -rf $EASYIPSECNETSTATOVPN
+/bin/rm -rf "$EASYIPSECNETSTATOVPN"
 #
 ### // new default gateway ###
 
@@ -559,7 +554,7 @@ FOPENVPN=$(/usr/bin/which openvpn)
 #
 ### ### ### ### ### ### ### ### ###
 
-if [ $MYNAME = root ]; then
+if [ "$MYNAME" = root ]; then
    echo "" # dummy
 else
    echo "<--- --- --->"
@@ -568,7 +563,7 @@ else
    exit 1
 fi
 
-if [ -z $FRACOON ]; then
+if [ -z "$FRACOON" ]; then
    echo "<--- --- --->"
    echo "need racoon/ipsec-tools"
    echo "<--- --- --->"
@@ -584,7 +579,7 @@ else
    echo "" # dummy
 fi
 
-if [ -z $FOPENVPN ]; then
+if [ -z "$FOPENVPN" ]; then
    echo "<--- --- --->"
    echo "need openvpn"
    echo "<--- --- --->"
@@ -617,11 +612,11 @@ echo "create gif interface: ($GIF1 percent)"
 echo "XXX"
 #
 ### run //
-/sbin/ifconfig gif0 create 2>&1 > /dev/null
+/sbin/ifconfig gif0 create > /dev/null 2>&1
 /sbin/ifconfig gif0 up
 ### // run
 #
-GIF1=`expr $GIF1 + 50`
+GIF1=$(("$GIF1" + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "create gif interface" 20 70 0
@@ -636,8 +631,8 @@ touch $EASYIPSECDESTNET
 
 dialog --inputbox "Enter your VPN destination network: (for example 172.31.254.0)" 8 40 2>$EASYIPSECDESTNET
 
-EASYIPSECCLIENTIPVALUE=$(/bin/cat $EASYIPSECCLIENTIP | sed 's/#//g' | sed 's/%//g')
-EASYIPSECDESTNETVALUE=$(/bin/cat $EASYIPSECDESTNET | sed 's/#//g' | sed 's/%//g')
+EASYIPSECCLIENTIPVALUE=$(sed 's/#//g' $EASYIPSECCLIENTIP | sed 's/%//g')
+EASYIPSECDESTNETVALUE=$(sed 's/#//g' $EASYIPSECDESTNET | sed 's/%//g')
 
 GIF2=50
 (
@@ -649,11 +644,11 @@ echo "set gif options: ($GIF2 percent)"
 echo "XXX"
 #
 ### run //
-/sbin/ifconfig gif0 $EASYIPSECCLIENTIPVALUE $EASYIPSECDESTNETVALUE
-/sbin/route add -net $EASYIPSECDESTNETVALUE/24 -interface gif0 2>&1 > /dev/null
+/sbin/ifconfig gif0 "$EASYIPSECCLIENTIPVALUE" "$EASYIPSECDESTNETVALUE"
+/sbin/route add -net "$EASYIPSECDESTNETVALUE"/24 -interface gif0 > /dev/null 2>&1
 ### // run
 #
-GIF2=`expr $GIF2 + 50`
+GIF2=$(("$GIF2" + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set gif options" 20 70 0
@@ -668,8 +663,8 @@ touch $EASYIPSECLOCALGATEWAY
 
 dialog --inputbox "Enter your local gateway IP:" 8 40 2>$EASYIPSECLOCALGATEWAY
 
-EASYIPSECSERVERIPVALUE=$(/bin/cat $EASYIPSECSERVERIP | sed 's/#//g' | sed 's/%//g')
-EASYIPSECLOCALGATEWAYVALUE=$(/bin/cat $EASYIPSECLOCALGATEWAY | sed 's/#//g' | sed 's/%//g')
+EASYIPSECSERVERIPVALUE=$(sed 's/#//g' $EASYIPSECSERVERIP | sed 's/%//g')
+EASYIPSECLOCALGATEWAYVALUE=$(sed 's/#//g' $EASYIPSECLOCALGATEWAY | sed 's/%//g')
 
 GIF3=50
 (
@@ -682,13 +677,13 @@ echo "XXX"
 #
 ### run //
 # clean up double entries on (RADIX_MPATH) equal-cost multi-path routing (ecmp) systems
-/usr/bin/netstat -rn -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route del -host "$EASYIPSECSERVERIPVALUE" 2>&1 > /dev/null
+/usr/bin/netstat -rn -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route del -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
 #
-/sbin/route del -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
-/sbin/route add -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
+/sbin/route del -host "$EASYIPSECSERVERIPVALUE" "$EASYIPSECLOCALGATEWAYVALUE" > /dev/null 2>&1
+/sbin/route add -host "$EASYIPSECSERVERIPVALUE" "$EASYIPSECLOCALGATEWAYVALUE" > /dev/null 2>&1
 ### // run
 #
-GIF3=`expr $GIF3 + 50`
+GIF3=$(("$GIF3" + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set direct vpn server route" 20 70 0
@@ -697,7 +692,7 @@ done
 #
 /bin/echo ""
 (
-/sbin/ping -q -c5 $EASYIPSECSERVERIPVALUE > /dev/null
+/sbin/ping -q -c5 "$EASYIPSECSERVERIPVALUE" > /dev/null
 
 if [ $? -eq 0 ]
 then
@@ -754,7 +749,7 @@ touch $EASYIPSECSERVERPSK
 
 dialog --inputbox "Enter your VPN IPsec Server Pre-shared key: (without spaces and pound)" 8 85 2>$EASYIPSECSERVERPSK
 
-EASYIPSECSERVERPSKVALUE=$(/bin/cat $EASYIPSECSERVERPSK | sed 's/#//g' | sed 's/%//g')
+EASYIPSECSERVERPSKVALUE=$(sed 's/#//g' $EASYIPSECSERVERPSK | sed 's/%//g')
 
 /bin/cat <<PSK > /usr/local/etc/racoon/psk.txt
 ### ### ### PLITC ### ### ###
@@ -910,6 +905,581 @@ sleep 1
 
 ### ipsec test //
 #
+#(
+EASYIPSECSERVERTEST="/tmp/easy_ipsec_server_test.txt"
+touch $EASYIPSECSERVERTEST
+/bin/chmod 0600 $EASYIPSECSERVERTEST
+
+dialog --inputbox "Enter your VPN IPsec Server forwarding interface IP: (for example 172.31.254.254)" 8 85 2>$EASYIPSECSERVERTEST
+
+EASYIPSECSERVERTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVERTEST | sed 's/%//g')
+
+/sbin/ping -q -c5 "$EASYIPSECSERVERTESTVALUE" > /dev/null
+
+if [ $? -eq 0 ]
+then
+      dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "It works!" 0 0
+      exit 0
+else
+      dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "ERROR: can't ping!" 0 0
+      /bin/echo ""
+      /bin/echo "ERROR: server isn't responsive"
+      exit 3
+fi
+#)
+#
+### // ipsec test
+
+/bin/echo ""
+/bin/echo "prepare racoon log ... wait a minute"
+/bin/echo ""
+sleep 15
+
+egrep "established|WARNING" /var/log/racoon.log | tail -n 10 > /tmp/easy_ipsec_racoon_log.txt
+#
+RACOONLOG="/tmp/easy_ipsec_racoon_log.txt"
+#
+(
+dialog --textbox "$RACOONLOG" 0 0
+)
+#
+/bin/rm -rf "$EASYIPSECSERVERTEST"
+#
+### // start ipsec
+
+### // stage2 ###
+
+### stage3 // ###
+
+### ipsec/openvpn relay setup // ###
+#
+#(
+dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --yesno "if you have an IPsec/OpenVPN Relay Server-Setup Go ahead!" 7 70
+
+OPENVPN=$?
+case $OPENVPN in
+   0)
+      /bin/echo ""
+;;
+   1)
+      /bin/echo ""
+      #/bin/echo "no thanks!"
+      /bin/echo "Have a nice day with IPsec"
+###
+# clean up
+/bin/rm -rf /tmp/easy_ipsec*.txt
+###
+      exit 4
+;;
+   255)
+      /bin/echo ""
+      /bin/echo "[ESC] key pressed."
+;;
+esac
+#)
+#
+(
+dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "its time now to establish a successful connection! ... than press OK" 8 80
+)
+#
+### // ipsec/openvpn relay setup ###
+
+### openvpn server // ###
+#
+EASYIPSECSERVEROVPNTEST="/tmp/easy_ipsec_server_openvpn_test.txt"
+touch $EASYIPSECSERVEROVPNTEST
+/bin/chmod 0600 $EASYIPSECSERVEROVPNTEST
+
+dialog --inputbox "Enter your VPN OpenVPN Server forwarding interface IP: (for example 172.31.253.1)" 8 85 2>$EASYIPSECSERVEROVPNTEST
+
+EASYIPSECSERVEROVPNTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVEROVPNTEST | sed 's/%//g')
+(
+/sbin/ping -q -c5 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null
+
+if [ $? -eq 0 ]
+then
+      dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "It works!" 0 0
+      exit 0
+else
+      dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "ERROR: can't ping!" 0 0
+      /bin/echo ""
+      /bin/echo "ERROR: server isn't responsive"
+      exit 5
+fi
+)
+##/bin/rm -rf $EASYIPSECSERVEROVPNTEST
+#
+### // openvpn server ###
+
+### new default gateway // ###
+#
+EASYIPSECNETSTATOVPN="/tmp/easy_ipsec_server_openvpn_netstat.txt"
+touch $EASYIPSECNETSTATOVPN
+/bin/chmod 0600 $EASYIPSECNETSTATOVPN
+#
+dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "it seems to work, lets change the default gateway!" 8 70
+#
+/sbin/route delete default > /dev/null 2>&1
+/sbin/route delete 128.0.0.0/1 > /dev/null 2>&1
+/sbin/route delete 0.0.0.0/1 > /dev/null 2>&1
+#
+/sbin/route add -net 128.0.0.0/1 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
+/sbin/route add -net 0.0.0.0/1 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
+#
+###
+/usr/bin/netstat -rn -f inet > "$EASYIPSECNETSTATOVPN"
+###
+#
+dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
+#
+###
+/bin/echo ""
+/bin/echo "Have a nice day with IPsec and OpenVPN"
+###
+#
+/bin/rm -rf $EASYIPSECNETSTATOVPN
+#
+### // new default gateway ###
+
+### // stage3 ###
+
+### stage4 // ###
+#
+(
+# clean up
+/bin/rm -rf /tmp/easy_ipsec*.txt
+)
+#
+### // stage4 ###
+
+### ### ### ### ### ### ### ### ###
+   ;;
+Linux)
+   ### Linux ###
+#
+DEBIAN=$(cat /etc/os-release | grep "ID" | egrep -v "VERSION" | sed 's/ID=//g')
+DEBVERSION=$(cat /etc/os-release | grep "VERSION_ID" | sed 's/VERSION_ID=//g' | sed 's/"//g')
+#
+case $DEBIAN in
+debian)
+### stage2 // ###
+#
+DEBDIALOG=$(/usr/bin/which dialog)
+DEBIPIP=$(/usr/bin/dpkg -l | grep "ipip" | awk '{print $2}')
+DEBIPSECTOOLS=$(/usr/bin/dpkg -l | grep "ipsec-tools" | awk '{print $2}')
+DEBRACOON=$(/usr/bin/dpkg -l | grep "racoon" | awk '{print $2}')
+DEBOPENVPN=$(/usr/bin/dpkg -l | grep "openvpn" | awk '{print $2}')
+#
+### ### ### ### ### ### ### ### ###
+
+if [ $MYNAME = root ]; then
+   echo "" # dummy
+else
+   echo "<--- --- --->"
+   echo ""
+   echo "ERROR: You must be root to run this script"
+   exit 1
+fi
+
+if [ "$DEBVERSION" = "8" ]; then
+   echo "" # dummy
+else
+   echo "<--- --- --->"
+   echo ""
+   echo "ERROR: You need Debian 8 (Jessie) Version"
+   exit 1
+fi
+
+if [ -z $DEBIPIP ]; then
+   echo "<--- --- --->"
+   echo "need ipip"
+   echo "<--- --- --->"
+   # (
+        apt-get update
+        apt-get install ipip
+   # )
+   echo "<--- --- --->"
+   ### break // ###
+   echo ""
+   read "Press [Enter] key to continue..."
+   ### // break ###
+else
+   echo "" # dummy
+fi
+
+if [ -z $DEBIPSECTOOLS ]; then
+   echo "<--- --- --->"
+   echo "need ipsec-tools"
+   echo "<--- --- --->"
+   # (
+        apt-get update
+        apt-get install ipsec-tools
+   # )
+   echo "<--- --- --->"
+   ### break // ###
+   echo ""
+   read "Press [Enter] key to continue..."
+   ### // break ###
+else
+   echo "" # dummy
+fi
+
+if [ -z $DEBRACOON ]; then
+   echo "<--- --- --->"
+   echo "need racoon"
+   echo "<--- --- --->"
+   # (
+        apt-get update
+        apt-get install racoon
+   # )
+   echo "<--- --- --->"
+   ### break // ###
+   echo ""
+   read "Press [Enter] key to continue..."
+   ### // break ###
+else
+   echo "" # dummy
+fi
+
+if [ -z $DEBOPENVPN ]; then
+   echo "<--- --- --->"
+   echo "need openvpn"
+   echo "<--- --- --->"
+   # (
+        apt-get update
+        apt-get install openvpn
+   # )
+   echo "<--- --- --->"
+   ### break // ###
+   echo ""
+   read "Press [Enter] key to continue..."
+   ### // break ###
+else
+   echo "" # dummy
+fi
+
+(
+# clean up
+/bin/rm -rf /tmp/easy_ipsec*.txt
+)
+
+### stage2 // ###
+
+GIF1=50
+(
+while test $GIF1 != 150
+do
+echo $GIF1
+echo "XXX"
+echo "create gif interface: ($GIF1 percent)"
+echo "XXX"
+#
+### run //
+#/sbin/ip tunnel add tun0 mode ipip 2>&1 > /dev/null
+#/sbin/ifconfig gif0 up
+### // run
+#
+GIF1=`expr $GIF1 + 50`
+sleep 1
+done
+) | dialog --title "generic tunnel interface" --gauge "create tun (ipip) interface" 20 70 0
+
+EASYIPSECCLIENTIP="/tmp/easy_ipsec_client_ip.txt"
+touch $EASYIPSECCLIENTIP
+
+dialog --inputbox "Enter your Roadwarrior Client IP: (for example 10.0.0.1)" 8 40 2>$EASYIPSECCLIENTIP
+
+EASYIPSECDESTNET="/tmp/easy_ipsec_destination_net.txt"
+touch $EASYIPSECDESTNET
+
+dialog --inputbox "Enter your VPN destination network: (for example 172.31.254.0)" 8 40 2>$EASYIPSECDESTNET
+
+EASYIPSECCLIENTIPVALUE=$(/bin/cat $EASYIPSECCLIENTIP | sed 's/#//g' | sed 's/%//g')
+EASYIPSECDESTNETVALUE=$(/bin/cat $EASYIPSECDESTNET | sed 's/#//g' | sed 's/%//g')
+
+GIF2=50
+(
+while test $GIF2 != 150
+do
+echo $GIF2
+echo "XXX"
+echo "set gif options: ($GIF2 percent)"
+echo "XXX"
+#
+### run //
+#/sbin/ifconfig tunl0 $EASYIPSECCLIENTIPVALUE netmask 255.255.255.252 pointopoint $EASYIPSECDESTNETVALUE
+#/sbin/route add -net $EASYIPSECDESTNETVALUE gw $EASYIPSECCLIENTIPVALUE netmask 255.255.255.0 dev tunl0
+### // run
+#
+GIF2=`expr $GIF2 + 50`
+sleep 1
+done
+) | dialog --title "generic tunnel interface" --gauge "set gif options" 20 70 0
+
+EASYIPSECSERVERIP="/tmp/easy_ipsec_server_ip.txt"
+touch $EASYIPSECSERVERIP
+
+dialog --inputbox "Enter your VPN IPsec Server IP:" 8 40 2>$EASYIPSECSERVERIP
+
+EASYIPSECLOCALGATEWAY="/tmp/easy_ipsec_local_gateway.txt"
+touch $EASYIPSECLOCALGATEWAY
+
+dialog --inputbox "Enter your local gateway IP:" 8 40 2>$EASYIPSECLOCALGATEWAY
+
+EASYIPSECSERVERIPVALUE=$(/bin/cat $EASYIPSECSERVERIP | sed 's/#//g' | sed 's/%//g')
+EASYIPSECLOCALGATEWAYVALUE=$(/bin/cat $EASYIPSECLOCALGATEWAY | sed 's/#//g' | sed 's/%//g')
+
+GIF3=50
+(
+while test $GIF3 != 150
+do
+echo $GIF3
+echo "XXX"
+echo "set direct vpn server route: ($GIF3 percent)"
+echo "XXX"
+#
+### run //
+# clean up double entries on (RADIX_MPATH) equal-cost multi-path routing (ecmp) systems
+#/usr/bin/netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route del -host "$EASYIPSECSERVERIPVALUE" 2>&1 > /dev/null
+#
+#/sbin/route del -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
+#/sbin/route add -host $EASYIPSECSERVERIPVALUE $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
+###
+/bin/netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route delete -host "$EASYIPSECSERVERIPVALUE" 2>&1 > /dev/null
+#
+/sbin/route delete -host $EASYIPSECSERVERIPVALUE 2>&1 > /dev/null
+/sbin/route add -host $EASYIPSECSERVERIPVALUE gw $EASYIPSECLOCALGATEWAYVALUE 2>&1 > /dev/null
+#
+/sbin/ip -4 tunnel del tun0
+/sbin/ip tunnel add tun0 mode ipip local 172.16.101.138 remote $EASYIPSECSERVERIPVALUE dev eth0.101
+/sbin/ifconfig tunl0 $EASYIPSECCLIENTIPVALUE netmask 255.255.255.252 pointopoint $EASYIPSECDESTNETVALUE
+#
+/sbin/ip link set tun0 up
+/sbin/ip link set tunl0 up
+### // run
+#
+GIF3=`expr $GIF3 + 50`
+sleep 1
+done
+) | dialog --title "generic tunnel interface" --gauge "set direct vpn server route" 20 70 0
+
+### check vpn server //
+#
+/bin/echo ""
+(
+/sbin/ping -q -c5 $EASYIPSECSERVERIPVALUE > /dev/null
+
+if [ $? -eq 0 ]
+then
+      /bin/echo ""
+      /bin/echo "server is responsive"
+      sleep 3
+      exit 0
+else
+      /bin/echo ""
+      /bin/echo "ERROR: server isn't responsive"
+      exit 1
+fi
+)
+#
+### // check vpn server
+
+/bin/mkdir -p /etc/racoon
+/bin/mkdir -p /etc/racoon/certs
+/bin/chmod 0700 /etc/racoon/certs
+
+### modify /etc/racoon/setkey.conf //
+#
+(
+EASYIPSECGETIFIP=$(/bin/netstat -rnW4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $8}' | xargs -L1 ifconfig | grep -w "inet" | awk '{print $2}' | sed 's/Adresse://g')
+
+/bin/cat <<SETKEY > /etc/racoon/setkey.conf
+### ### ### PLITC // ### ### ###
+#
+flush;
+
+spdflush;
+
+spdadd $EASYIPSECCLIENTIPVALUE/32 $EASYIPSECDESTNETVALUE/24 any -P out ipsec
+   esp/tunnel/$EASYIPSECGETIFIP-$EASYIPSECSERVERIPVALUE/require;
+
+spdadd $EASYIPSECDESTNETVALUE/24 $EASYIPSECCLIENTIPVALUE/32 any -P in ipsec
+   esp/tunnel/$EASYIPSECSERVERIPVALUE-$EASYIPSECGETIFIP/require;
+#
+### ### ### // PLITC ### ### ###
+# EOF
+SETKEY
+)
+#
+/bin/chmod 0600 /etc/racoon/setkey.conf
+#
+### // modify /etc/racoon/setkey.conf
+
+### modify /etc/racoon/psk.txt //
+#
+(
+EASYIPSECSERVERPSK="/tmp/easy_ipsec_server_psk.txt"
+touch $EASYIPSECSERVERPSK
+/bin/chmod 0600 $EASYIPSECSERVERPSK
+
+dialog --inputbox "Enter your VPN IPsec Server Pre-shared key: (without spaces and pound)" 8 85 2>$EASYIPSECSERVERPSK
+
+EASYIPSECSERVERPSKVALUE=$(/bin/cat $EASYIPSECSERVERPSK | sed 's/#//g' | sed 's/%//g')
+
+/bin/cat <<PSK > /etc/racoon/psk.txt
+### ### ### PLITC ### ### ###
+#
+$EASYIPSECSERVERIPVALUE $EASYIPSECSERVERPSKVALUE
+#
+### ### ### PLITC ### ### ###
+# EOF
+PSK
+
+/bin/chmod 0600 /etc/racoon/psk.txt
+/bin/rm $EASYIPSECSERVERPSK
+)
+#
+### // modify /etc/racoon/psk.txt
+
+### modify /racoon/racoon.conf //
+#
+EASYIPSECGETIFIPCONF=$(/bin/netstat -rnW4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $8}' | xargs -L1 ifconfig | grep -w "inet" | awk '{print $2}' | sed 's/Adresse://g')
+#
+(
+/bin/cat <<CONF > /etc/racoon/racoon.conf
+### ### ### PLITC ### ### ###
+#
+path    include "/etc/racoon";
+path    certificate "/etc/racoon/certs";      #location of cert files
+path    pre_shared_key "/etc/racoon/psk.txt"; #location of pre-shared key file
+log     debug;                                          #log verbosity setting: set to 'notify' when testing and debugging is complete
+#
+### ### ### ##### ### ### ###
+
+padding # options are not to be changed
+{
+        maximum_length  20;
+        randomize       off;
+        strict_check    off;
+        exclusive_tail  off;
+}
+ 
+timer   # timing options. change as needed
+{
+        counter         5;
+        interval        20 sec;
+        persend         1;
+        natt_keepalive  15 sec;
+        phase1          120 sec;
+        phase2          100 sec;
+}
+ 
+listen  # address [port] that racoon will listening on
+{
+#
+### CHANGEME // ###
+        isakmp          $EASYIPSECGETIFIPCONF [500];
+        isakmp_natt     $EASYIPSECGETIFIPCONF [4500];
+### // CHANGEME ###
+#
+}
+
+remote $EASYIPSECSERVERIPVALUE
+{
+        # ph1id 1;
+        exchange_mode   main;
+        doi             ipsec_doi;
+        situation       identity_only;
+
+        peers_identifier address $EASYIPSECSERVERIPVALUE;
+        verify_identifier on;
+        verify_cert off;
+        weak_phase1_check on;
+
+        passive         off;
+        proposal_check  strict;
+
+        ike_frag on;
+        nonce_size 16;
+        support_proxy on;
+        generate_policy off;
+
+        nat_traversal   force;
+	dpd_delay 30;
+	dpd_retry 10;
+	dpd_maxfail 10;
+
+                        proposal {
+                                dh_group                16;
+                                lifetime time           1800 sec;
+                                encryption_algorithm    aes 256;
+                                hash_algorithm          sha512;
+                                authentication_method   pre_shared_key;
+                        }
+}
+
+sainfo (address $EASYIPSECCLIENTIPVALUE/32 any address $EASYIPSECDESTNETVALUE/24 any)
+{
+        # remoteid 1;
+        pfs_group       16;
+        lifetime        time       18000 sec;
+        encryption_algorithm       aes 256;
+        authentication_algorithm   hmac_sha512;
+        compression_algorithm      deflate;
+}
+
+#
+### ### ### ### ### ### ### ### ###
+# EOF
+CONF
+)
+#
+/bin/chmod 0600 /etc/racoon/racoon.conf
+#
+### // modify /etc/racoon/racoon.conf
+
+### start ipsec //
+#
+(
+dialog --title "Delete Racoon-Logs" --backtitle "Delete Racoon-Logs" --yesno "syslog can be very slow, do you want delete racoon logs before ?" 7 60
+
+response=$?
+case $response in
+   0)
+      /bin/echo "" > /var/log/racoon.log
+      /bin/echo ""
+      /bin/echo "System-Logs deleted!"
+;;
+   1)
+      /bin/echo ""
+      /bin/echo "System-Logs not deleted."
+;;
+   255)
+      /bin/echo ""
+      /bin/echo "[ESC] key pressed."
+;;
+esac
+#
+)
+#
+(
+/bin/echo ""
+/bin/echo "Starting IPsec"
+sleep 1
+/bin/echo ""
+/usr/sbin/service racoon stop
+#/usr/sbin/service ipsec stop
+sleep 1
+/bin/echo ""
+#/usr/sbin/service ipsec start
+/usr/sbin/service racoon start
+sleep 1
+/bin/echo ""
+)
+#
+
+### ipsec test //
+#
 (
 EASYIPSECSERVERTEST="/tmp/easy_ipsec_server_test.txt"
 touch $EASYIPSECSERVERTEST
@@ -1057,6 +1627,16 @@ dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
 #
 ### // stage4 ###
 
+### ### ### ### ### ### ### ### ###
+   ;;
+*)
+   # error 1
+   echo "<--- --- --->"
+   echo ""
+   echo "ERROR: Plattform = unknown"
+   exit 6
+   ;;
+esac
 ### ### ### ### ### ### ### ### ###
    ;;
 *)

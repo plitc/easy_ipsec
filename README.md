@@ -16,6 +16,8 @@ Dependencies
    * racoon/ipsec-tools
    * openvpn
 
+* Linux (coming soon)
+
 Features
 ========
 easy ipsec configuration
@@ -24,6 +26,7 @@ Platform
 ========
 * MacOS X
 * FreeBSD
+* Linux (coming soon)
 
 Usage
 =====
