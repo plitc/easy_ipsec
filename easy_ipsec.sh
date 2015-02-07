@@ -1264,11 +1264,11 @@ echo "XXX"
 ###
 /bin/netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route delete -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
 #
-/sbin/route delete -host $EASYIPSECSERVERIPVALUE > /dev/null 2>&1
-/sbin/route add -host $EASYIPSECSERVERIPVALUE gw $EASYIPSECLOCALGATEWAYVALUE > /dev/null 2>&1
+/sbin/route delete -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
+/sbin/route add -host "$EASYIPSECSERVERIPVALUE" gw "$EASYIPSECLOCALGATEWAYVALUE" > /dev/null 2>&1
 #
 /sbin/ip -4 tunnel del tun0
-/sbin/ip tunnel add tun0 mode ipip local 172.16.101.138 remote $EASYIPSECSERVERIPVALUE dev eth0.101
+/sbin/ip tunnel add tun0 mode ipip local 172.16.101.138 remote "$EASYIPSECSERVERIPVALUE" dev eth0.101
 /sbin/ifconfig tunl0 "$EASYIPSECCLIENTIPVALUE" netmask 255.255.255.252 pointopoint "$EASYIPSECDESTNETVALUE"
 #
 /sbin/ip link set tun0 up
@@ -1497,7 +1497,7 @@ sleep 1
 
 ### ipsec test //
 #
-(
+#(
 EASYIPSECSERVERTEST="/tmp/easy_ipsec_server_test.txt"
 touch $EASYIPSECSERVERTEST
 /bin/chmod 0600 $EASYIPSECSERVERTEST
@@ -1518,7 +1518,7 @@ else
       /bin/echo "ERROR: server isn't responsive"
       exit 3
 fi
-)
+#)
 #
 ### // ipsec test
 
@@ -1527,7 +1527,7 @@ fi
 /bin/echo ""
 sleep 15
 
-/bin/cat /var/log/racoon.log | egrep "established|WARNING" | tail -n 10 > /tmp/easy_ipsec_racoon_log.txt
+egrep "established|WARNING" /var/log/racoon.log | tail -n 10 > /tmp/easy_ipsec_racoon_log.txt
 #
 RACOONLOG="/tmp/easy_ipsec_racoon_log.txt"
 #
@@ -1615,11 +1615,11 @@ dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Ne
 /sbin/route delete 128.0.0.0/1 > /dev/null 2>&1
 /sbin/route delete 0.0.0.0/1 > /dev/null 2>&1
 #
-/sbin/route add -net 128.0.0.0/1 $EASYIPSECSERVEROVPNTESTVALUE > /dev/null 2>&1
-/sbin/route add -net 0.0.0.0/1 $EASYIPSECSERVEROVPNTESTVALUE > /dev/null 2>&1
+/sbin/route add -net 128.0.0.0/1 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
+/sbin/route add -net 0.0.0.0/1 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
 #
 ###
-/usr/bin/netstat -rn -f inet > $EASYIPSECNETSTATOVPN
+/usr/bin/netstat -rn -f inet > "$EASYIPSECNETSTATOVPN"
 ###
 #
 dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
