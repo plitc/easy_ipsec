@@ -1,6 +1,6 @@
 #!/bin/sh
 
-### LICENSE // ###
+### LICENSE (BSD 2-Clause) // ###
 #
 # Copyright (c) 2014, Daniel Plominski (Plominski IT Consulting)
 # All rights reserved.
@@ -26,7 +26,7 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
-### // LICENSE ###
+### // LICENSE (BSD 2-Clause) ###
 
 ### ### ### PLITC ### ### ###
 
@@ -328,7 +328,7 @@ remote $EASYIPSECSERVERIPVALUE
 
                         proposal {
                                 dh_group                16;
-                                lifetime time           1800 sec;
+                                lifetime time           7200 sec;
                                 encryption_algorithm    aes 256;
                                 hash_algorithm          sha512;
                                 authentication_method   pre_shared_key;
@@ -339,7 +339,7 @@ sainfo (address $EASYIPSECCLIENTIPVALUE/32 any address $EASYIPSECDESTNETVALUE/24
 {
         # remoteid 1;
         pfs_group       16;
-        lifetime        time       18000 sec;
+        lifetime        time       3600 sec;
         encryption_algorithm       aes 256;
         authentication_algorithm   hmac_sha512;
         compression_algorithm      deflate;
@@ -836,7 +836,7 @@ remote $EASYIPSECSERVERIPVALUE
 
                         proposal {
                                 dh_group                16;
-                                lifetime time           1800 sec;
+                                lifetime time           7200 sec;
                                 encryption_algorithm    aes 256;
                                 hash_algorithm          sha512;
                                 authentication_method   pre_shared_key;
@@ -847,7 +847,7 @@ sainfo (address $EASYIPSECCLIENTIPVALUE/32 any address $EASYIPSECDESTNETVALUE/24
 {
         # remoteid 1;
         pfs_group       16;
-        lifetime        time       18000 sec;
+        lifetime        time       3600 sec;
         encryption_algorithm       aes 256;
         authentication_algorithm   hmac_sha512;
         compression_algorithm      deflate;
@@ -1428,7 +1428,7 @@ remote $EASYIPSECSERVERIPVALUE
 
                         proposal {
                                 dh_group                16;
-                                lifetime time           1800 sec;
+                                lifetime time           7200 sec;
                                 encryption_algorithm    aes 256;
                                 hash_algorithm          sha512;
                                 authentication_method   pre_shared_key;
@@ -1439,7 +1439,7 @@ sainfo (address $EASYIPSECCLIENTIPVALUE/32 any address $EASYIPSECDESTNETVALUE/24
 {
         # remoteid 1;
         pfs_group       16;
-        lifetime        time       18000 sec;
+        lifetime        time       3600 sec;
         encryption_algorithm       aes 256;
         authentication_algorithm   hmac_sha512;
         compression_algorithm      deflate;
