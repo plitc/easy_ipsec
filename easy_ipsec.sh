@@ -184,7 +184,7 @@ then
 else
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
-      exit 2
+      exit 1
 fi
 )
 #
@@ -425,12 +425,12 @@ EASYIPSECSERVERTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVERTEST | sed 's/%//g')
 if [ $? -eq 0 ]
 then
       dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "It works!" 0 0
-      exit 0
+      # exit 0
 else
       dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
-      exit 3
+      exit 1
 fi
 #)
 /bin/rm -rf "$EASYIPSECSERVERTEST"
@@ -459,7 +459,7 @@ case $OPENVPN in
 # clean up
 /bin/rm -rf /tmp/easy_ipsec*.txt
 ###
-      exit 4
+      exit 1
 ;;
    255)
       /bin/echo ""
@@ -493,7 +493,7 @@ else
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
-      exit 5
+      exit 1
 fi
 )
 ##/bin/rm -rf "$EASYIPSECSERVEROVPNTEST"
@@ -699,7 +699,7 @@ then
 else
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
-      exit 2
+      exit 1
 fi
 )
 #
@@ -919,7 +919,7 @@ else
       dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
-      exit 3
+      exit 1
 fi
 #)
 #
@@ -964,7 +964,7 @@ case $OPENVPN in
 # clean up
 /bin/rm -rf /tmp/easy_ipsec*.txt
 ###
-      exit 4
+      exit 1
 ;;
    255)
       /bin/echo ""
@@ -998,7 +998,7 @@ else
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
-      exit 5
+      exit 1
 fi
 )
 ##/bin/rm -rf $EASYIPSECSERVEROVPNTEST
@@ -1508,7 +1508,7 @@ else
       dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
-      exit 3
+      exit 1
 fi
 #)
 #
@@ -1553,7 +1553,7 @@ case $OPENVPN in
 # clean up
 /bin/rm -rf /tmp/easy_ipsec*.txt
 ###
-      exit 4
+      exit 1
 ;;
    255)
       /bin/echo ""
@@ -1587,7 +1587,7 @@ else
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
-      exit 5
+      exit 1
 fi
 )
 ##/bin/rm -rf $EASYIPSECSERVEROVPNTEST
@@ -1642,7 +1642,7 @@ dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
    echo "<--- --- --->"
    echo ""
    echo "ERROR: Plattform = unknown"
-   exit 6
+   exit 1
    ;;
 esac
 ### ### ### ### ### ### ### ### ###
@@ -1652,7 +1652,7 @@ esac
    echo "<--- --- --->"
    echo ""
    echo "ERROR: Plattform = unknown"
-   exit 6
+   exit 1
    ;;
 esac
 
