@@ -327,7 +327,7 @@ remote $EASYIPSECSERVERIPVALUE
 
                         proposal {
                                 dh_group                16;
-                                lifetime time           7200 sec;
+                                lifetime time           30 sec;
                                 encryption_algorithm    aes 256;
                                 hash_algorithm          sha512;
                                 authentication_method   pre_shared_key;
@@ -832,7 +832,7 @@ remote $EASYIPSECSERVERIPVALUE
 
                         proposal {
                                 dh_group                16;
-                                lifetime time           7200 sec;
+                                lifetime time           30 sec;
                                 encryption_algorithm    aes 256;
                                 hash_algorithm          sha512;
                                 authentication_method   pre_shared_key;
@@ -1421,7 +1421,7 @@ remote $EASYIPSECSERVERIPVALUE
 
                         proposal {
                                 dh_group                16;
-                                lifetime time           7200 sec;
+                                lifetime time           30 sec;
                                 encryption_algorithm    aes 256;
                                 hash_algorithm          sha512;
                                 authentication_method   pre_shared_key;
