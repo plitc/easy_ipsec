@@ -175,7 +175,6 @@ done
 /bin/echo ""
 (
 /sbin/ping -q -c5 "$EASYIPSECSERVERIPVALUE" > /dev/null
-
 if [ $? -eq 0 ]
 then
       /bin/echo ""
@@ -423,7 +422,6 @@ dialog --inputbox "Enter your VPN IPsec Server forwarding interface IP: (for exa
 EASYIPSECSERVERTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVERTEST | sed 's/%//g')
 
 /sbin/ping -q -c5 "$EASYIPSECSERVERTESTVALUE" > /dev/null
-
 if [ $? -eq 0 ]
 then
       dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "It works!" 0 0
@@ -487,7 +485,6 @@ dialog --inputbox "Enter your VPN OpenVPN Server forwarding interface IP: (for e
 EASYIPSECSERVEROVPNTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVEROVPNTEST | sed 's/%//g')
 (
 /sbin/ping -q -c5 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null
-
 if [ $? -eq 0 ]
 then
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "It works!" 0 0
@@ -693,7 +690,6 @@ done
 /bin/echo ""
 (
 /sbin/ping -q -c5 "$EASYIPSECSERVERIPVALUE" > /dev/null
-
 if [ $? -eq 0 ]
 then
       /bin/echo ""
@@ -915,7 +911,6 @@ dialog --inputbox "Enter your VPN IPsec Server forwarding interface IP: (for exa
 EASYIPSECSERVERTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVERTEST | sed 's/%//g')
 
 /sbin/ping -q -c5 "$EASYIPSECSERVERTESTVALUE" > /dev/null
-
 if [ $? -eq 0 ]
 then
       dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "It works!" 0 0
@@ -995,7 +990,6 @@ dialog --inputbox "Enter your VPN OpenVPN Server forwarding interface IP: (for e
 EASYIPSECSERVEROVPNTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVEROVPNTEST | sed 's/%//g')
 (
 /sbin/ping -q -c5 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null
-
 if [ $? -eq 0 ]
 then
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "It works!" 0 0
@@ -1285,7 +1279,6 @@ done
 /bin/echo ""
 (
 /sbin/ping -q -c5 "$EASYIPSECSERVERIPVALUE" > /dev/null
-
 if [ $? -eq 0 ]
 then
       /bin/echo ""
@@ -1507,7 +1500,6 @@ dialog --inputbox "Enter your VPN IPsec Server forwarding interface IP: (for exa
 EASYIPSECSERVERTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVERTEST | sed 's/%//g')
 
 /sbin/ping -q -c5 "$EASYIPSECSERVERTESTVALUE" > /dev/null
-
 if [ $? -eq 0 ]
 then
       dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "It works!" 0 0
@@ -1587,7 +1579,6 @@ dialog --inputbox "Enter your VPN OpenVPN Server forwarding interface IP: (for e
 EASYIPSECSERVEROVPNTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVEROVPNTEST | sed 's/%//g')
 (
 /sbin/ping -q -c5 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null
-
 if [ $? -eq 0 ]
 then
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "It works!" 0 0
