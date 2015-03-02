@@ -98,7 +98,7 @@ echo "XXX"
 /sbin/ifconfig gif0 up
 ### // run
 #
-GIF1=$(($GIF1 + 50))
+GIF1=$((GIF1 + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "create gif interface" 20 70 0
@@ -130,7 +130,7 @@ echo "XXX"
 /sbin/route add -net "$EASYIPSECDESTNETVALUE"/24 -interface gif0 > /dev/null 2>&1
 ### // run
 #
-GIF2=$(($GIF2 + 50))
+GIF2=$((GIF2 + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set gif options" 20 70 0
@@ -165,7 +165,7 @@ echo "XXX"
 /sbin/route add -host "$EASYIPSECSERVERIPVALUE" "$EASYIPSECLOCALGATEWAYVALUE" > /dev/null 2>&1
 ### // run
 #
-GIF3=$(($GIF3 + 50))
+GIF3=$((GIF3 + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set direct vpn server route" 20 70 0
@@ -613,7 +613,7 @@ echo "XXX"
 /sbin/ifconfig gif0 up
 ### // run
 #
-GIF1=$(($GIF1 + 50))
+GIF1=$((GIF1 + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "create gif interface" 20 70 0
@@ -645,7 +645,7 @@ echo "XXX"
 /sbin/route add -net "$EASYIPSECDESTNETVALUE"/24 -interface gif0 > /dev/null 2>&1
 ### // run
 #
-GIF2=$(($GIF2 + 50))
+GIF2=$((GIF2 + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set gif options" 20 70 0
@@ -680,7 +680,7 @@ echo "XXX"
 /sbin/route add -host "$EASYIPSECSERVERIPVALUE" "$EASYIPSECLOCALGATEWAYVALUE" > /dev/null 2>&1
 ### // run
 #
-GIF3=$(($GIF3 + 50))
+GIF3=$((GIF3 + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set direct vpn server route" 20 70 0
@@ -1190,7 +1190,7 @@ echo "XXX"
 #/sbin/ifconfig gif0 up
 ### // run
 #
-GIF1=$(($GIF1 + 50))
+GIF1=$((GIF1 + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "create tun (ipip) interface" 20 70 0
@@ -1222,7 +1222,7 @@ echo "XXX"
 #/sbin/route add -net $EASYIPSECDESTNETVALUE gw $EASYIPSECCLIENTIPVALUE netmask 255.255.255.0 dev tunl0
 ### // run
 #
-GIF2=$(($GIF2 + 50))
+GIF2=$((GIF2 + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set gif options" 20 70 0
@@ -1269,7 +1269,7 @@ echo "XXX"
 /sbin/ip link set tunl0 up
 ### // run
 #
-GIF3=$(($GIF3 + 50))
+GIF3=$((GIF3 + 50))
 sleep 1
 done
 ) | dialog --title "generic tunnel interface" --gauge "set direct vpn server route" 20 70 0
