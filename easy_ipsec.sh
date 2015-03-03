@@ -287,7 +287,7 @@ timer   # timing options. change as needed
         persend         1;
         natt_keepalive  15 sec;
         phase1          120 sec;
-        phase2          100 sec;
+        phase2          60 sec;
 }
  
 listen  # address [port] that racoon will listening on
@@ -327,7 +327,7 @@ remote $EASYIPSECSERVERIPVALUE
 
                         proposal {
                                 dh_group                16;
-                                lifetime time           30 sec;
+                                lifetime time           600 sec;
                                 encryption_algorithm    aes 256;
                                 hash_algorithm          sha512;
                                 authentication_method   pre_shared_key;
@@ -338,7 +338,7 @@ sainfo (address $EASYIPSECCLIENTIPVALUE/32 any address $EASYIPSECDESTNETVALUE/24
 {
         # remoteid 1;
         pfs_group       16;
-        lifetime        time       3600 sec;
+        lifetime        time       300 sec;
         encryption_algorithm       aes 256;
         authentication_algorithm   hmac_sha512;
         compression_algorithm      deflate;
@@ -377,9 +377,13 @@ case $response in
 ;;
 esac
 #
-#/bin/launchctl stop com.apple.syslog
-#sleep 1
-#/bin/launchctl start com.apple.syslog
+#/ /bin/launchctl stop com.apple.syslog
+#/ /bin/launchctl start com.apple.syslog
+#
+#/ 
+#/ launchctl unload /System/Library/LaunchDaemons/com.apple.racoon.plist
+#/ sleep 1
+#/ launchctl load /System/Library/LaunchDaemons/com.apple.racoon.plist
 #
 )
 #
@@ -792,7 +796,7 @@ timer   # timing options. change as needed
         persend         1;
         natt_keepalive  15 sec;
         phase1          120 sec;
-        phase2          100 sec;
+        phase2          60 sec;
 }
  
 listen  # address [port] that racoon will listening on
@@ -832,7 +836,7 @@ remote $EASYIPSECSERVERIPVALUE
 
                         proposal {
                                 dh_group                16;
-                                lifetime time           30 sec;
+                                lifetime time           600 sec;
                                 encryption_algorithm    aes 256;
                                 hash_algorithm          sha512;
                                 authentication_method   pre_shared_key;
@@ -843,7 +847,7 @@ sainfo (address $EASYIPSECCLIENTIPVALUE/32 any address $EASYIPSECDESTNETVALUE/24
 {
         # remoteid 1;
         pfs_group       16;
-        lifetime        time       3600 sec;
+        lifetime        time       300 sec;
         encryption_algorithm       aes 256;
         authentication_algorithm   hmac_sha512;
         compression_algorithm      deflate;
@@ -1381,7 +1385,7 @@ timer   # timing options. change as needed
         persend         1;
         natt_keepalive  15 sec;
         phase1          120 sec;
-        phase2          100 sec;
+        phase2          60 sec;
 }
  
 listen  # address [port] that racoon will listening on
@@ -1421,7 +1425,7 @@ remote $EASYIPSECSERVERIPVALUE
 
                         proposal {
                                 dh_group                16;
-                                lifetime time           30 sec;
+                                lifetime time           600 sec;
                                 encryption_algorithm    aes 256;
                                 hash_algorithm          sha512;
                                 authentication_method   pre_shared_key;
@@ -1432,7 +1436,7 @@ sainfo (address $EASYIPSECCLIENTIPVALUE/32 any address $EASYIPSECDESTNETVALUE/24
 {
         # remoteid 1;
         pfs_group       16;
-        lifetime        time       3600 sec;
+        lifetime        time       300 sec;
         encryption_algorithm       aes 256;
         authentication_algorithm   hmac_sha512;
         compression_algorithm      deflate;
