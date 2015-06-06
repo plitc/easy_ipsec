@@ -48,5 +48,12 @@ Usage
 
 Errata
 ======
+* 06.06.2015: NAT Problems
+```
+   NONESP-encap: isakmp: phase 1 ? oakley-quick[E]
+   NONESP-encap: isakmp: phase 2/others ? inf[E]
+   NONESP-encap: isakmp: phase 2/others ? oakley-quick[E]
+```
+
 * failed after delete system-logs (MacOS)
 
