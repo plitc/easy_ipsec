@@ -17,6 +17,7 @@ Dependencies
    * openvpn
 
 * Linux
+   * dialog
    * iputils-ping
    * strongswan (ikev1)
    * openvpn
