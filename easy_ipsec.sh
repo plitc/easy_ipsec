@@ -1224,7 +1224,7 @@ echo "XXX"
 #
 ### run //
 /bin/ip addr del $EASYIPSECCLIENTIPVALUE dev $OLDINTERFACE > /dev/null 2>&1
-/bin/ip addr addr $EASYIPSECCLIENTIPVALUE/32 dev $EASYIPSECINTERFACEVALUE > /dev/null 2>&1
+/bin/ip addr add $EASYIPSECCLIENTIPVALUE/32 dev $EASYIPSECINTERFACEVALUE > /dev/null 2>&1
 ### // run
 #
 GIF2=$((GIF2 + 50))
