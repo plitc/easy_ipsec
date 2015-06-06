@@ -13,7 +13,7 @@ WARNING
      * local network ip AAA.AAA.AAA.101 - default routing over ISP1 gateway YYY.YYY.YYY.1
    * laptop 2 with debian linux:
      * local network ip BBB.BBB.BBB.102 - default routing over ISP2 gateway ZZZ.ZZZ.ZZZ.2
-* this limitation comes from the ipsec "main mode"
+* this limitation comes from the ipsec "main mode" function
 
 Dependencies
 ============
