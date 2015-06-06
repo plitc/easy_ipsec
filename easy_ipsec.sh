@@ -1222,6 +1222,9 @@ echo "set ipsec local subnet address: ($GIF2 percent)"
 echo "XXX"
 #
 ### run //
+# delete old interface bonding
+OLDINTERFACE=$(/bin/ip a | grep $EASYIPSECCLIENTIPVALUE | awk '{print $5}')
+/bin/ip addr del $EASYIPSECCLIENTIPVALUE dev $OLDINTERFACE > /dev/null 2>&1
 /bin/ip addr addr $EASYIPSECCLIENTIPVALUE/32 dev $EASYIPSECINTERFACEVALUE > /dev/null 2>&1
 ### // run
 #
