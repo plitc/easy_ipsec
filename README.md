@@ -5,6 +5,14 @@ easy_ipsec for ipv4 vpn relay setup
 
 https://blog.plitc.eu/2014/freebsd-10-ipv4-vpn-relay-ipsec-entryopenvpn-middleopenvpn-exit-node-mit-jails/
 
+WARNING
+=======
+* if you use more than 1 roadwarrior clients in the same subnet -> they need different "public" transport ips (if possible)
+for example:
+   * laptop 1: (local network ip XXX.XXX.XXX.101 - default routing over ISP1 gateway ZZZ.ZZZ.ZZZ.1)
+   * laptop 2: (local network ip XXX.XXX.XXX.102 - default routing over ISP2 gateway ZZZ.ZZZ.ZZZ.2)
+* this limitation comes from the ipsec "main mode"
+
 Dependencies
 ============
 * MacOS
