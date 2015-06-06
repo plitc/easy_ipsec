@@ -48,8 +48,12 @@ Usage
 
 Errata
 ======
-* 06.06.2015: NAT Problems
+* 06.06.2015: NAT issues (tcpdump)
 ```
+   NONESP-encap: isakmp: phase 1 I ident
+   NONESP-encap: isakmp: phase 1 R ident
+   NONESP-encap: isakmp: phase 1 I ident[E]
+   NONESP-encap: isakmp: phase 1 R ident[E]
    NONESP-encap: isakmp: phase 1 ? oakley-quick[E]
    NONESP-encap: isakmp: phase 2/others ? inf[E]
    NONESP-encap: isakmp: phase 2/others ? oakley-quick[E]
