@@ -1253,8 +1253,8 @@ echo "set direct vpn server route: ($GIF3 percent)"
 echo "XXX"
 #
 ### run //
-/bin/netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route delete -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
-/sbin/route delete -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
+/bin/netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route del -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
+/sbin/route del -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
 /sbin/route add -host "$EASYIPSECSERVERIPVALUE" gw "$EASYIPSECLOCALGATEWAYVALUE" > /dev/null 2>&1
 ### // run
 #
