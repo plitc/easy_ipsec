@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 ### LICENSE (BSD 2-Clause) // ###
 #
@@ -1211,6 +1211,7 @@ dialog --inputbox "Enter your VPN destination network: (for example 172.31.254.0
 
 EASYIPSECCLIENTIPVALUE=$(sed 's/#//g' $EASYIPSECCLIENTIP | sed 's/%//g')
 EASYIPSECDESTNETVALUE=$(sed 's/#//g' $EASYIPSECDESTNET | sed 's/%//g')
+OLDINTERFACE=$(/bin/ip a | grep $EASYIPSECCLIENTIPVALUE | awk '{print $5}')
 
 GIF2=50
 (
@@ -1222,8 +1223,6 @@ echo "set ipsec local subnet address: ($GIF2 percent)"
 echo "XXX"
 #
 ### run //
-# delete old interface bonding
-OLDINTERFACE=$(/bin/ip a | grep $EASYIPSECCLIENTIPVALUE | awk '{print $5}')
 /bin/ip addr del $EASYIPSECCLIENTIPVALUE dev $OLDINTERFACE > /dev/null 2>&1
 /bin/ip addr addr $EASYIPSECCLIENTIPVALUE/32 dev $EASYIPSECINTERFACEVALUE > /dev/null 2>&1
 ### // run
@@ -1258,7 +1257,7 @@ echo "XXX"
 ### run //
 /bin/netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}' | xargs -L1 route del -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
 /sbin/route del -host "$EASYIPSECSERVERIPVALUE" > /dev/null 2>&1
-/sbin/route add -host "$EASYIPSECSERVERIPVALUE" gw "$EASYIPSECLOCALGATEWAYVALUE" > /dev/null 2>&1
+/sbin/route add -host "$EASYIPSECSERVERIPVALUE" gw "$EASYIPSECLOCALGATEWAYVALUE" dev "$EASYIPSECINTERFACEVALUE" > /dev/null 2>&1
 ### // run
 #
 GIF3=$((GIF3 + 50))
