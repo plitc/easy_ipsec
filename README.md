@@ -9,8 +9,8 @@ WARNING
 =======
 * if you use more than 1 roadwarrior clients in the same subnet -> they need different "public" transport gateway ips (if possible)
 for example:
-   * laptop 1: (local network ip XXX.XXX.XXX.101 - default routing over ISP1 gateway ZZZ.ZZZ.ZZZ.1)
-   * laptop 2: (local network ip XXX.XXX.XXX.102 - default routing over ISP2 gateway ZZZ.ZZZ.ZZZ.2)
+   * laptop 1 with mac os:       (local network ip XXX.XXX.XXX.101 - default routing over ISP1 gateway ZZZ.ZZZ.ZZZ.1)
+   * laptop 2 with debian linux: (local network ip XXX.XXX.XXX.102 - default routing over ISP2 gateway ZZZ.ZZZ.ZZZ.2)
 * this limitation comes from the ipsec "main mode"
 
 Dependencies
