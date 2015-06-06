@@ -1300,7 +1300,7 @@ conn %default
      ikelifetime=10m
      keylife=5m
      rekeymargin=2m
-     keyingtries=1
+     keyingtries=2
      keyexchange=ikev1
 
 conn roadwarrior
