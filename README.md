@@ -16,7 +16,9 @@ Dependencies
    * racoon/ipsec-tools
    * openvpn
 
-* Linux (coming soon)
+* Linux
+   * strongswan (ikev1)
+   * openvpn
 
 Features
 ========
@@ -24,9 +26,9 @@ easy ipsec configuration
 
 Platform
 ========
-* MacOS X
-* FreeBSD
-* Linux (coming soon)
+* MacOS X 10.5+
+* FreeBSD 10+
+* Linux / Debian 8 (Jessie)
 
 Usage
 =====
