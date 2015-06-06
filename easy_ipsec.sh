@@ -1371,7 +1371,7 @@ sleep 1
 sleep 1
 /bin/echo ""
 /usr/sbin/ipsec statusall
-sleep 1
+sleep 5
 /bin/echo ""
 )
 #
@@ -1404,7 +1404,7 @@ fi
 
 echo "" # dummy
 echo "" # dummy
-printf "\033[1;31m IPsec finished \033[0m\n"
+printf "\033[1;31mIPsec finished\033[0m\n"
 
 #/ DEV /# --->
 exit 0
