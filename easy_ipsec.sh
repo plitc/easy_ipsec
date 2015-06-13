@@ -1353,7 +1353,19 @@ $EASYIPSECSERVERIPVALUE : PSK "$EASYIPSECSERVERPSKVALUE"
 # EOF
 PSK
 
-/bin/chmod 0600 /etc/ipsec.secrets
+/bin/chmod 0600 /etc/ipsec.secrets > /dev/null 2>&1
+if [ $? -eq 0 ]
+then
+   : # dummy
+else
+   CHECKATTRIPSECSECRETS=$(lsattr /etc/ipsec.secrets | awk '{print $1}' | grep -c "i")
+   if [ "$CHECKATTRIPSECSECRETS" = "1" ]; then
+      echo "" # dummy
+      printf "\033[1;31m[WARNING] /etc/ipsec.secrets has immutable flag!\033[0m\n"
+      echo "" # dummy
+      sleep 4
+   fi
+fi
 /bin/rm $EASYIPSECSERVERPSK
 )
 #
