@@ -46,6 +46,13 @@ Usage
 =====
     # ./easy_ipsec.sh
 
+Screencast
+==========
+* github plitc easy_ipsec
+  * freebsd racoon server <-> linux strongswan client
+
+[![github plitc easy_ipsec](https://img.youtube.com/vi/GX6whhD096Y/0.jpg)](https://www.youtube.com/watch?v=GX6whhD096Y)
+
 Errata
 ======
 * 06.06.2015: NAT issues (tcpdump)
