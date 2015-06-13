@@ -55,6 +55,13 @@ Screencast
 
 Errata
 ======
+* 14.06.2015: reconnect after 1h 15 min
+```
+64 bytes from 172.31.254.254: icmp_seq=4931 ttl=64 time=18 ms
+
+64 bytes from 172.31.254.254: icmp_seq=4945 ttl=64 time=16 ms
+```
+
 * 06.06.2015: NAT issues (tcpdump)
 ```
    NONESP-encap: isakmp: phase 1 I ident
