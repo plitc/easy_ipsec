@@ -2,7 +2,7 @@
 Background
 ==========
 based on:
-[FreeBSD: IPv4 VPN Relay (IPsec entry/OpenVPN middle/OpenVPN exit node) Jails für Roadwarrior](https://blog.plitc.eu/2014/freebsd-10-ipv4-vpn-relay-ipsec-entryopenvpn-middleopenvpn-exit-node-mit-jails/)
+* [FreeBSD: IPv4 VPN Relay (IPsec entry/OpenVPN middle/OpenVPN exit node) Jails für Roadwarrior](https://blog.plitc.eu/2014/freebsd-10-ipv4-vpn-relay-ipsec-entryopenvpn-middleopenvpn-exit-node-mit-jails/)
 
 WARNING
 =======
