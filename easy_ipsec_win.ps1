@@ -70,6 +70,7 @@ Start-Sleep -s 10
 
 
 
+echo "" # dummy
 echo "EXIT"
 Start-Sleep -s 2
 
