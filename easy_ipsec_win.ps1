@@ -71,7 +71,7 @@ Start-Sleep -s 2
 
 $objForm = New-Object System.Windows.Forms.Form 
 $objForm.Text = "IPsec PreSharedKey"
-$objForm.Size = New-Object System.Drawing.Size(300,300) 
+$objForm.Size = New-Object System.Drawing.Size(300,200) 
 $objForm.StartPosition = "CenterScreen"
 
 $objForm.KeyPreview = $True
@@ -97,7 +97,7 @@ $objForm.Controls.Add($CancelButton)
 $objLabel = New-Object System.Windows.Forms.Label
 $objLabel.Location = New-Object System.Drawing.Size(10,20) 
 $objLabel.Size = New-Object System.Drawing.Size(280,20) 
-$objLabel.Text = "Please enter the IPsec PreSharedKey in the space below:"
+$objLabel.Text = "Please enter the IPsec PreSharedKey:"
 $objForm.Controls.Add($objLabel) 
 
 $objTextBox = New-Object System.Windows.Forms.TextBox 
