@@ -41,10 +41,10 @@ easy ipsec configuration
 
 Platform
 ========
-* Mac OS X 10.6+
+* Mac OS X 10.8+
 * FreeBSD 10+
 * Linux / Debian 8+
-* Windows 7+
+* Windows 8+
 
 Usage
 =====
