@@ -1102,12 +1102,16 @@ else
 fi
 
 if [ "$DEBVERSION" = "8" ]; then
-   echo "" # dummy
+   : # dummy
 else
-   echo "<--- --- --->"
-   echo ""
-   echo "ERROR: You need Debian 8 (Jessie) Version"
-   exit 1
+   if [ "$DEBVERSION" = "9" ]; then
+      : # dummy
+   else
+      echo "<--- --- --->"
+      echo ""
+      echo "ERROR: You need Debian 8 (Jessie) or 9 (Stretch) Version"
+      exit 1
+   fi
 fi
 
 if [ -z "$DEBPING" ]; then

@@ -18,19 +18,19 @@ WARNING
 Dependencies
 ============
 * MacOS
-   * brew
-   * dialog
-   * tunnelblick
+   * [brew](http://brew.sh/)
+   * [dialog](http://brewformulas.org/Dialog)
+   * [tunnelblick](http://sourceforge.net/projects/tunnelblick/)
 
 * FreeBSD
-   * racoon/ipsec-tools
-   * openvpn
+   * [racoon/ipsec-tools](https://www.freshports.org/security/ipsec-tools/)
+   * [openvpn](https://www.freshports.org/security/openvpn/)
 
 * Linux
-   * dialog
-   * iputils-ping
-   * strongswan (ikev1)
-   * openvpn
+   * [dialog](https://packages.debian.org/stretch/dialog)
+   * [iputils-ping](https://packages.debian.org/stretch/iputils-ping)
+   * [strongswan (ikev1)](https://packages.debian.org/stretch/strongswan)
+   * [openvpn](https://packages.debian.org/stretch/openvpn)
 
 * Windows
    * [PowerShell](https://www.microsoft.com/en-us/download/details.aspx?id=34595)
@@ -42,9 +42,9 @@ easy ipsec configuration
 
 Platform
 ========
-* MacOS X 10.5+
+* MacOS X 10.6+
 * FreeBSD 10+
-* Linux / Debian 8 (Jessie)
+* Linux / Debian 8 (Jessie) or 9 (Stretch)
 * Windows 7+
 
 Usage
