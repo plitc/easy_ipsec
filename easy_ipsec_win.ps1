@@ -65,7 +65,7 @@ netsh advfirewall set global ipsec ipsecthroughnat serverandclientbehindnat
 Start-Sleep -s 2
 
 echo "-----> configure the Roadwarrior connection <-----"
-netsh advfirewall consec add rule name="roadwarrior" endpoint1=192.168.1.0/24 endpoint2=10.1.1.0/24 action=requireinrequireout mode=tunnel enable=no profile=any type=static localtunnelendpoint=any remotetunnelendpoint=1.2.3.4 protocol=any interfacetype=any auth1=ComputerCert auth1ca="CN=le.ca, DC=le, DC=ca" qmpfs=dhgroup14 qmsecmethods="ESP:SHA256-AES256+10min+1000000000kb"
+netsh advfirewall consec add rule name="roadwarrior" endpoint1=10.0.0.0/24 endpoint2=172.31.254.0/24 action=requireinrequireout mode=tunnel enable=yes profile=any type=static localtunnelendpoint=any remotetunnelendpoint=46.4.163.54 protocol=any interfacetype=any auth1=computerpsk auth1psk="test" qmpfs=dhgroup14 qmsecmethods="ESP:SHA256-AES256+10min+1000000000kb"
 Start-Sleep -s 10
 
 
