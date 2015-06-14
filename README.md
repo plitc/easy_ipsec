@@ -44,7 +44,7 @@ Platform
 ========
 * MacOS X 10.6+
 * FreeBSD 10+
-* Linux / Debian 8 (Jessie) or 9 (Stretch)
+* Linux / Debian 8+
 * Windows 7+
 
 Usage
