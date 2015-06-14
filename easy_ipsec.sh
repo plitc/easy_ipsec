@@ -1118,7 +1118,7 @@ if [ -z "$DEBPING" ]; then
     echo "<--- --- --->"
     echo "need iputils-ping"
     echo "<--- --- --->"
-    # (  
+    # (
          apt-get update
          apt-get -y install iputils-ping
     # )
@@ -1127,7 +1127,7 @@ if [ -z "$DEBPING" ]; then
     #/ echo ""
     #/ read "Press [Enter] key to continue..."
     ### // break ###
-else 
+else
     : # dummy
 fi
 
