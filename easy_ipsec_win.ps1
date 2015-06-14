@@ -30,13 +30,16 @@
 
 #>
 
-<# / run as administrator / #>
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-
 {
+#"No Administrative rights, it will display a popup window asking user for Admin rights"
+
 $arguments = "& '" + $myinvocation.mycommand.definition + "'"
-Start-Process powershell -Verb runAs -ArgumentList $arguments
-Break
+Start-Process "$psHome\powershell.exe" -Verb runAs -ArgumentList $arguments
+
+break
 }
+#"After user clicked Yes on the popup, your file will be reopened with Admin rights"
+
 
 
