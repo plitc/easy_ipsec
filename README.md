@@ -34,6 +34,7 @@ Dependencies
 
 * Windows
    * [PowerShell](https://www.microsoft.com/en-us/download/details.aspx?id=34595)
+   * (optional) [Github on Windows](https://windows.github.com/)
 
 Features
 ========
