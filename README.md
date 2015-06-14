@@ -32,6 +32,9 @@ Dependencies
    * strongswan (ikev1)
    * openvpn
 
+* Windows
+   * PowerShell(https://www.microsoft.com/en-us/download/details.aspx?id=34595)
+
 Features
 ========
 easy ipsec configuration
@@ -41,6 +44,7 @@ Platform
 * MacOS X 10.5+
 * FreeBSD 10+
 * Linux / Debian 8 (Jessie)
+* Windows 7+
 
 Usage
 =====
