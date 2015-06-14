@@ -68,9 +68,12 @@ echo "-----> configure the Roadwarrior connection <-----"
 netsh advfirewall consec del rule name="roadwarrior"
 echo "" # dummy
 netsh advfirewall consec add rule name="roadwarrior" endpoint1=172.22.99.0/24 endpoint2=172.31.254.0/24 action=requireinrequireout mode=tunnel enable=yes profile=any type=static localtunnelendpoint=any remotetunnelendpoint=46.4.163.54 protocol=any interfacetype=any auth1=computerpsk auth1psk="test" qmpfs=dhgroup14 qmsecmethods="ESP:SHA256-AES256+10min+1000000000kb"
-Start-Sleep -s 10
+Start-Sleep -s 5
 
-
+echo "" # dummy
+netsh advfirewall consec show rule name="roadwarrior"
+echo "" # dummy
+Start-Sleep -s 5
 
 echo "" # dummy
 echo "EXIT"
