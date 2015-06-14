@@ -50,6 +50,14 @@ Usage
 =====
     # ./easy_ipsec.sh
 
+Usage (for Windows)
+===================
+```
+   Set-ExecutionPolicy Unrestricted
+
+   & "C:\github\easy_ipsec\easy_ipsec_win.ps1"
+```
+
 Screencast
 ==========
 * github plitc easy_ipsec
