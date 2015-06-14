@@ -41,7 +41,7 @@ easy ipsec configuration
 
 Platform
 ========
-* MacOS X 10.6+
+* Mac OS X 10.6+
 * FreeBSD 10+
 * Linux / Debian 8+
 * Windows 7+
