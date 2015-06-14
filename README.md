@@ -67,7 +67,7 @@ Screencast
 
 Errata
 ======
-* 14.06.2015: reconnect after 1h 15 min
+* 14.06.2015: interruption after ~1h 15 min
 ```
 64 bytes from 172.31.254.254: icmp_seq=4931 ttl=64 time=18 ms
 
