@@ -52,10 +52,14 @@ Usage
 
 Usage (for Windows)
 ===================
+* run as administrator (allow the untrusted powershell scripts)
 ```
    Set-ExecutionPolicy Unrestricted
+```
 
-   & "C:\github\easy_ipsec\easy_ipsec_win.ps1"
+* run as administrator
+```
+   PS C:\github\easy_ipsec> .\easy_ipsec_win.ps1
 ```
 
 Screencast
