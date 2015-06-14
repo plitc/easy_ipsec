@@ -38,5 +38,8 @@ Start-Process "$psHome\powershell.exe" -Verb runAs -ArgumentList $arguments
 break
 }
 
+echo "### ### ### easy_ipsec for windows ### ### ###"
+Start-Sleep -s 10
+
 
 
