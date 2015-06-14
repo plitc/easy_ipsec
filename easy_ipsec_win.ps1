@@ -101,7 +101,7 @@ $objLabel.Text = "Please enter the IPsec PreSharedKey in the space below:"
 $objForm.Controls.Add($objLabel) 
 
 $objTextBox = New-Object System.Windows.Forms.TextBox 
-$objTextBox.Location = New-Object System.Drawing.Size(10,40) 
+$objTextBox.Location = New-Object System.Drawing.Size(10,60) 
 $objTextBox.Size = New-Object System.Drawing.Size(260,20) 
 $objForm.Controls.Add($objTextBox) 
 
