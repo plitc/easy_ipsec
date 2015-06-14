@@ -71,7 +71,7 @@ Start-Sleep -s 2
 
 $objForm = New-Object System.Windows.Forms.Form 
 $objForm.Text = "IPsec PreSharedKey"
-$objForm.Size = New-Object System.Drawing.Size(300,200) 
+$objForm.Size = New-Object System.Drawing.Size(300,300) 
 $objForm.StartPosition = "CenterScreen"
 
 $objForm.KeyPreview = $True
@@ -110,14 +110,12 @@ $objForm.Topmost = $True
 $objForm.Add_Shown({$objForm.Activate()})
 [void] $objForm.ShowDialog()
 
-$x
-
 
 
 echo "-----> configure the Roadwarrior connection <-----"
 netsh advfirewall consec del rule name="roadwarrior"
 echo "" # dummy
-netsh advfirewall consec add rule name="roadwarrior" endpoint1=any endpoint2=172.31.254.0/24 action=requireinrequireout mode=tunnel enable=yes profile=any type=static localtunnelendpoint=any remotetunnelendpoint=10.0.0.1 protocol=any interfacetype=any auth1=computerpsk auth1psk="test" qmpfs=dhgroup14 qmsecmethods="ESP:SHA256-AES256+10min+1000000000kb"
+netsh advfirewall consec add rule name="roadwarrior" endpoint1=any endpoint2=172.31.254.0/24 action=requireinrequireout mode=tunnel enable=yes profile=any type=static localtunnelendpoint=any remotetunnelendpoint=10.0.0.1 protocol=any interfacetype=any auth1=computerpsk auth1psk="$x" qmpfs=dhgroup14 qmsecmethods="ESP:SHA256-AES256+10min+1000000000kb"
 Start-Sleep -s 5
 
 echo "" # dummy
