@@ -1,9 +1,7 @@
 
 Background
 ==========
-easy_ipsec for ipv4 vpn relay setup
-
-https://blog.plitc.eu/2014/freebsd-10-ipv4-vpn-relay-ipsec-entryopenvpn-middleopenvpn-exit-node-mit-jails/
+based on [FreeBSD 10: IPv4 VPN Relay (IPsec entry/OpenVPN middle/OpenVPN exit node) mit Jails für Roadwarrior](https://blog.plitc.eu/2014/freebsd-10-ipv4-vpn-relay-ipsec-entryopenvpn-middleopenvpn-exit-node-mit-jails/)
 
 WARNING
 =======
