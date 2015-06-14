@@ -44,13 +44,14 @@ echo "### easy_ipsec for windows ###"
 echo "###                        ###"
 echo "   ### ### ### #### ### ###   "
 Start-Sleep -s 10
+echo ""
 
 echo "set IKE's main mode"
 netsh advfirewall set global mainmode mmsecmethods dhgroup14:aes256-sha256
 Start-Sleep -s 2
 
 echo "set Key lifetime"
-netsh advfirewall set global mainmode mmkeylifetime 10min,0sess
+netsh advfirewall set global mainmode mmkeylifetime 10min
 Start-Sleep -s 2
 
 echo "enforce Diffie Hellmann"
@@ -67,16 +68,6 @@ Start-Sleep -s 10
 
 
 
-
-
-
-
-
-
-
-
-
-
-echo "sleep"
-Start-Sleep -s 10
+echo "EXIT"
+Start-Sleep -s 2
 
