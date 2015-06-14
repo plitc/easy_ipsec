@@ -38,14 +38,14 @@ Start-Process "$psHome\powershell.exe" -Verb runAs -ArgumentList $arguments
 break
 }
 
-echo "# ### ### ### ##### ### ### ### #"
-echo "#                               #"
-echo "# (\/)                          #"
-echo "# (..)   easy_ipsec for windows #"
-echo "# (")(")                        #"
-echo "#                               #"
-echo "# ### ### ### ##### ### ### ### #"
-echo ""
+echo '# ### ### ### ##### ### ### ### #'
+echo '#                               #'
+echo '# (\/)                          #'
+echo '# (..)   easy_ipsec for windows #'
+echo '# (")(")                        #'
+echo '#                               #'
+echo '# ### ### ### ##### ### ### ### #'
+echo "" # dummy
 Start-Sleep -s 10
 
 echo "-> set IKE's main mode"
