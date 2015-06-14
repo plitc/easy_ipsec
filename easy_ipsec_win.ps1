@@ -38,8 +38,45 @@ Start-Process "$psHome\powershell.exe" -Verb runAs -ArgumentList $arguments
 break
 }
 
-echo "### ### ### easy_ipsec for windows ### ### ###"
+echo "   ### ### ### #### ### ###   "
+echo "###                        ###"
+echo "### easy_ipsec for windows ###"
+echo "###                        ###"
+echo "   ### ### ### #### ### ###   "
+Start-Sleep -s 10
+
+echo "set IKE's main mode"
+netsh advfirewall set global mainmode mmsecmethods dhgroup14:aes256-sha256
+Start-Sleep -s 2
+
+echo "set Key lifetime"
+netsh advfirewall set global mainmode mmkeylifetime 10min,0sess
+Start-Sleep -s 2
+
+echo "enforce Diffie Hellmann"
+netsh advfirewall set global mainmode mmforcedh yes
+Start-Sleep -s 2
+
+echo "IPsec through routers"
+netsh advfirewall set global ipsec ipsecthroughnat serverandclientbehindnat
+Start-Sleep -s 2
+
+echo "configure the Roadwarrior connection"
+netsh advfirewall consec add rule name="roadwarrior" endpoint1=192.168.1.0/24 endpoint2=10.1.1.0/24 action=requireinrequireout mode=tunnel enable=no profile=any type=static localtunnelendpoint=any remotetunnelendpoint=1.2.3.4 protocol=any interfacetype=any auth1=ComputerCert auth1ca="CN=le.ca, DC=le, DC=ca" qmpfs=dhgroup14 qmsecmethods="ESP:SHA256-AES256+10min+1000000000kb"
 Start-Sleep -s 10
 
 
+
+
+
+
+
+
+
+
+
+
+
+echo "sleep"
+Start-Sleep -s 10
 
