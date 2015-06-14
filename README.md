@@ -33,7 +33,7 @@ Dependencies
    * openvpn
 
 * Windows
-   * PowerShell(https://www.microsoft.com/en-us/download/details.aspx?id=34595)
+   * [PowerShell](https://www.microsoft.com/en-us/download/details.aspx?id=34595)
 
 Features
 ========
