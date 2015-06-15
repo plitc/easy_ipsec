@@ -1090,6 +1090,22 @@ DEBDIALOG=$(/usr/bin/which dialog)
 DEBSTRONGSWAN=$(/usr/bin/dpkg -l | grep "strongswan-ikev1" | awk '{print $2}')
 DEBOPENVPN=$(/usr/bin/dpkg -l | grep "openvpn" | awk '{print $2}')
 #
+#/ spinner
+spinner()
+{
+    local pid=$1
+    local delay=0.01
+    local spinstr='|/-\'
+    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+          local temp=${spinstr#?}
+          printf " [%c]  " "$spinstr"
+          local spinstr=$temp${spinstr%"$temp"}
+          sleep $delay
+          printf "\b\b\b\b\b\b"
+    done
+    printf "    \b\b\b\b"
+}
+#
 ### ### ### ### ### ### ### ### ###
 
 if [ "$MYNAME" = root ]; then
@@ -1425,17 +1441,8 @@ echo "" # dummy
 echo "" # dummy
 printf "\033[1;31mIPsec finished\033[0m\n"
 
-#/ DEV /# --->
-exit 0
 
-
-
-/bin/echo ""
-/bin/echo "prepare racoon log ... wait a minute"
-/bin/echo ""
-sleep 15
-
-egrep "established|WARNING" /var/log/racoon.log | tail -n 10 > /tmp/easy_ipsec_racoon_log.txt
+systemctl status strongswan > /tmp/easy_ipsec_racoon_log.txt
 #
 RACOONLOG="/tmp/easy_ipsec_racoon_log.txt"
 #
@@ -1484,6 +1491,45 @@ dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Ne
 #
 ### // ipsec/openvpn relay setup ###
 
+### openvpn connection // ###
+#
+EASYIPSECOVPNCONFIG1="/tmp/easy_ipsec_server_openvpn_config1.txt"
+EASYIPSECOVPNCONFIG2="/tmp/easy_ipsec_server_openvpn_config2.txt"
+EASYIPSECOVPNCONFIG3="/tmp/easy_ipsec_server_openvpn_config3.txt"
+EASYIPSECOVPNCONFIG4="/tmp/easy_ipsec_server_openvpn_config4.txt"
+EASYIPSECOVPNCONFIG5="/tmp/easy_ipsec_server_openvpn_config5.txt"
+systemctl | grep openvpn | awk '{print $1}' | egrep -v "system" > "$EASYIPSECOVPNCONFIG1"
+
+nl "$EASYIPSECOVPNCONFIG1" | sed 's/ //g' > "$EASYIPSECOVPNCONFIG2"
+/bin/sed 's/$/ off/' "$EASYIPSECOVPNCONFIG2" > "$EASYIPSECOVPNCONFIG3"
+
+dialog --radiolist "Choose one OpenVPN Service:" 45 80 60 --file "$EASYIPSECOVPNCONFIG3" 2>"$EASYIPSECOVPNCONFIG4"
+list1=$?
+case $list1 in
+    0)
+       echo "" # dummy
+       echo "" # dummy
+       awk 'NR==FNR {h[$1] = $2; next} {print $1,$2,h[$1]}' "$EASYIPSECOVPNCONFIG3" "$EASYIPSECOVPNCONFIG4" | awk '{print $2}' | sed 's/"//g' > "$EASYIPSECOVPNCONFIG5"
+       GETSERVICE=$(cat "$EASYIPSECOVPNCONFIG5")
+       systemctl restart "$GETSERVICE"
+       (echo "systemctl restart $GETSERVICE"; sleep 10) & spinner $!
+       : # dummy
+    ;;
+    1)
+       echo "" # dummy
+       echo "" # dummy
+       exit 0
+    ;;
+  255)
+       echo "" # dummy
+       echo "" # dummy
+       echo "[ESC] key pressed."
+       exit 0
+    ;;
+esac
+#
+### // openvpn connection ###
+
 ### openvpn server // ###
 #
 EASYIPSECSERVEROVPNTEST="/tmp/easy_ipsec_server_openvpn_test.txt"
@@ -1493,19 +1539,18 @@ touch $EASYIPSECSERVEROVPNTEST
 dialog --inputbox "Enter your VPN OpenVPN Server forwarding interface IP: (for example 172.31.253.1)" 8 85 2>$EASYIPSECSERVEROVPNTEST
 
 EASYIPSECSERVEROVPNTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVEROVPNTEST | sed 's/%//g')
-(
-/sbin/ping -q -c5 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null
+
+/bin/ping -q -c5 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null
 if [ $? -eq 0 ]
 then
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "It works!" 0 0
-      exit 0
 else
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
       exit 1
 fi
-)
+
 ##/bin/rm -rf $EASYIPSECSERVEROVPNTEST
 #
 ### // openvpn server ###
@@ -1518,15 +1563,25 @@ touch $EASYIPSECNETSTATOVPN
 #
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "it seems to work, lets change the default gateway!" 8 70
 #
-/sbin/route delete default > /dev/null 2>&1
-/sbin/route delete 128.0.0.0/1 > /dev/null 2>&1
-/sbin/route delete 0.0.0.0/1 > /dev/null 2>&1
+#/ /sbin/route del default > /dev/null 2>&1
+/sbin/route del -net 128.0.0.0/1 # > /dev/null 2>&1
+/sbin/route del -net 0.0.0.0/1 # > /dev/null 2>&1
 #
-/sbin/route add -net 128.0.0.0/1 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
-/sbin/route add -net 0.0.0.0/1 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
+
+
+EASYIPSECOVPNSUBNET=$(echo "$EASYIPSECSERVEROVPNTESTVALUE" | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.' | sed 's/$/0/')
+
+#/ EASYIPSECOVPNSUBNET=$(netstat -rn4 | grep $EASYIPSECSERVEROVPNTESTVALUE | awk '{print $1}' | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.' | sed 's/$/0/')
+EASYIPSECOVPNINTERFACE=$(netstat -rn4 | grep "$EASYIPSECOVPNSUBNET" | awk '{print $8}')
+
+
+
+/bin/ip r a "$EASYIPSECSERVEROVPNTESTVALUE"/32 dev "$EASYIPSECOVPNINTERFACE"
+/bin/ip r a 0.0.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" # > /dev/null 2>&1
+/bin/ip r a 128.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" # > /dev/null 2>&1
 #
 ###
-/usr/bin/netstat -rn -f inet > "$EASYIPSECNETSTATOVPN"
+/bin/netstat -rn4 > "$EASYIPSECNETSTATOVPN"
 ###
 #
 dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
