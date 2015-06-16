@@ -1441,10 +1441,6 @@ fi
 #
 ### // ipsec test
 
-echo "" # dummy
-echo "" # dummy
-printf "\033[1;31mIPsec finished\033[0m\n"
-
 
 systemctl status strongswan > /tmp/easy_ipsec_racoon_log.txt
 #
@@ -1460,6 +1456,103 @@ dialog --textbox "$RACOONLOG" 0 0
 
 ### // stage2 ###
 
+### ipsec iptable rules // ###
+#
+#(
+dialog --title "IPsec restrictive Firewall Rules" --backtitle "IPsec restrictive Firewall Rules" --yesno "do you want allow (ipv4) ipsec only traffic?" 7 70
+
+IPSECFIREWALL=$?
+case $IPSECFIREWALL in
+  0)
+     /bin/echo "" # dummy
+     ###
+     #/ clean up
+     /bin/rm -rf /tmp/easy_ipsec*.txt
+     ###
+     #
+### flush // ###
+##/ v4
+iptables -F INPUT
+iptables -F FORWARD
+iptables -F OUTPUT
+iptables -t nat -F PREROUTING
+iptables -t nat -F POSTROUTING
+##/ v6
+ip6tables -F INPUT
+ip6tables -F FORWARD
+ip6tables -F OUTPUT
+ip6tables -t nat -F PREROUTING
+ip6tables -t nat -F POSTROUTING
+### // flush ###
+
+
+### ALLOW: icmp // ###
+iptables -A INPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -p icmp --icmp-type echo-request -j DROP
+### // ALLOW: icmp ###
+
+
+### ALLOW: ipsec encapsulation // ###
+##/ IKE negotiations
+iptables -A INPUT  -p udp --sport 500 --dport 500 -j ACCEPT
+iptables -A OUTPUT -p udp --sport 500 --dport 500 -j ACCEPT
+##/ IKE negotiations over nat
+iptables -A INPUT  -p udp --sport 4500 --dport 4500 -j ACCEPT
+iptables -A OUTPUT -p udp --sport 4500 --dport 4500 -j ACCEPT
+##/ ESP encrypton and authentication
+iptables -A INPUT  -p 50 -j ACCEPT
+iptables -A OUTPUT -p 50 -j ACCEPT
+##/ uncomment for AH authentication header
+#/ iptables -A INPUT  -p 51 -j ACCEPT
+#/ iptables -A OUTPUT -p 51 -j ACCEPT
+### // ALLOW: ipsec encapsulation ###
+
+
+### ALLOW: ipsec policy // ###
+iptables -A FORWARD -s "$EASYIPSECDESTNETVALUE"/24 -d "$EASYIPSECCLIENTIPVALUE"/32 -i "$EASYIPSECINTERFACEVALUE" -m policy --dir in --pol ipsec --reqid 1 --proto esp -j ACCEPT
+iptables -A FORWARD -s "$EASYIPSECCLIENTIPVALUE"/32 -d "$EASYIPSECDESTNETVALUE"/24 -o "$EASYIPSECINTERFACEVALUE" -m policy --dir out --pol ipsec --reqid 1 --proto esp -j ACCEPT
+### // ALLOW: ipsec policy ###
+
+
+### ALLOW: through ipsec // ###
+iptables -A INPUT -m policy --pol ipsec --dir in -j ACCEPT
+iptables -A OUTPUT -m policy --pol ipsec --dir out -j ACCEPT
+### // ALLOW: through ipsec ###
+
+
+### DROP // ###
+##/ v4
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+##/ v6
+ip6tables -P INPUT DROP
+ip6tables -P FORWARD DROP
+ip6tables -P OUTPUT DROP
+### // DROP ###
+     #
+;;
+  1)
+     /bin/echo "" # dummy
+     printf "\033[1;31mIPsec finished\033[0m\n"
+     ###
+     #/ clean up
+     /bin/rm -rf /tmp/easy_ipsec*.txt
+     ###
+     exit 0
+;;
+255)
+     /bin/echo "" # dummy
+     /bin/echo "[ESC] key pressed."
+;;
+esac
+#)
+#
+### // ipsec iptable rules ###
+
 ### stage3 // ###
 
 ### ipsec/openvpn relay setup // ###
@@ -1469,22 +1562,21 @@ dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Ne
 
 OPENVPN=$?
 case $OPENVPN in
-   0)
-      /bin/echo ""
+  0)
+     /bin/echo ""
 ;;
-   1)
-      /bin/echo ""
-      #/bin/echo "no thanks!"
-      /bin/echo "Have a nice day with IPsec"
-###
-# clean up
-/bin/rm -rf /tmp/easy_ipsec*.txt
-###
-      exit 1
+  1)
+     /bin/echo ""
+     /bin/echo "Have a nice day with IPsec"
+     ###
+     #/ clean up
+     /bin/rm -rf /tmp/easy_ipsec*.txt
+     ###
+     exit 0
 ;;
-   255)
-      /bin/echo ""
-      /bin/echo "[ESC] key pressed."
+255)
+     /bin/echo ""
+     /bin/echo "[ESC] key pressed."
 ;;
 esac
 #)
