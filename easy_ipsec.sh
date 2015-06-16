@@ -1543,7 +1543,7 @@ iptables -A OUTPUT -m policy --pol ipsec --dir out -j ACCEPT
 
 
 ### info // ###
-iptables -N IPSECOPENVPN
+iptables -N EASYIPSEC
 ### // info ###
 
 
@@ -1699,7 +1699,7 @@ EASYIPSECOVPNINTERFACE=$(netstat -rn4 | grep "$EASYIPSECOVPNSUBNET" | awk '{prin
 
 ### openvpn iptable rules // ##
 #
-CHECKIPSECIPTABLERULES=$(iptables -S | grep -c "IPSECOPENVPN")
+CHECKIPSECIPTABLERULES=$(iptables -S | grep -c "EASYIPSEC")
 if [ "$CHECKIPSECIPTABLERULES" = "1" ]
 then
     iptables -A INPUT -i "$EASYIPSECOVPNINTERFACE" -j ACCEPT
