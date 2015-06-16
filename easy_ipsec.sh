@@ -1288,20 +1288,24 @@ done
 ### check vpn server //
 #
 /bin/echo ""
+
+### initial "route" connection
 (
+/bin/ping -q -c2 "$EASYIPSECSERVERIPVALUE" > /dev/null
+)
+
 /bin/ping -q -c5 "$EASYIPSECSERVERIPVALUE" > /dev/null
 if [ $? -eq 0 ]
 then
       /bin/echo ""
       /bin/echo "server is responsive"
       sleep 3
-      exit 0
 else
       /bin/echo ""
       /bin/echo "ERROR: server isn't responsive"
       exit 1
 fi
-)
+
 #
 ### // check vpn server
 
