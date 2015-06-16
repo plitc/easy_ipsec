@@ -1682,14 +1682,14 @@ touch $EASYIPSECNETSTATOVPN
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "it seems to work, lets change the default gateway!" 8 70
 #
 #/ /sbin/route del default > /dev/null 2>&1
-/sbin/route del -net 128.0.0.0/1 # > /dev/null 2>&1
-/sbin/route del -net 0.0.0.0/1 # > /dev/null 2>&1
+/sbin/route del -net 128.0.0.0/1 > /dev/null 2>&1
+/sbin/route del -net 0.0.0.0/1 > /dev/null 2>&1
 #
 EASYIPSECOVPNSUBNET=$(echo "$EASYIPSECSERVEROVPNTESTVALUE" | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.' | sed 's/$/0/')
 EASYIPSECOVPNINTERFACE=$(netstat -rn4 | grep "$EASYIPSECOVPNSUBNET" | awk '{print $8}')
 /bin/ip r a "$EASYIPSECSERVEROVPNTESTVALUE"/32 dev "$EASYIPSECOVPNINTERFACE"
-/bin/ip r a 0.0.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" # > /dev/null 2>&1
-/bin/ip r a 128.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" # > /dev/null 2>&1
+/bin/ip r a 0.0.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
+/bin/ip r a 128.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
 #
 ###
 /bin/netstat -rn4 > "$EASYIPSECNETSTATOVPN"
