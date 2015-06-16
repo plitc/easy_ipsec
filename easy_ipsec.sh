@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 ### LICENSE (BSD 2-Clause) // ###
 #
@@ -1464,10 +1464,10 @@ dialog --title "IPsec restrictive Firewall Rules" --backtitle "IPsec restrictive
 IPSECFIREWALL=$?
 case $IPSECFIREWALL in
   0)
-     ###
-     #/ clean up
-     /bin/rm -rf /tmp/easy_ipsec*.txt
-     ###
+     #/ ###
+     #/ #/ clean up
+     #/ /bin/rm -rf /tmp/easy_ipsec*.txt
+     #/ ###
      #
      sleep 2
      #
@@ -1705,9 +1705,17 @@ then
     iptables -A INPUT -i "$EASYIPSECOVPNINTERFACE" -j ACCEPT
     iptables -A OUTPUT -o "$EASYIPSECOVPNINTERFACE" -j ACCEPT
     #/ static ARP
-    GETIPSECGATEWAY=$(netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}')
-    GETIPSECGATEWAYMAC=$(arp -n | grep "$GETIPSECGATEWAY" | awk '{print $3}')
-    arp -s "$GETIPSECGATEWAY" "$GETIPSECGATEWAYMAC"
+    GETIPSECSERVERGATEWAYFORMAT=$(echo "$EASYIPSECSERVERIPVALUE" | grep -cEo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+    if [ "$GETIPSECSERVERGATEWAYFORMAT" = "0" ]
+    then
+       #/ fqdn
+       : # dummy
+    else
+       #/ ip address
+       GETIPSECGATEWAY=$(netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}')
+       GETIPSECGATEWAYMAC=$(arp -n | grep "$GETIPSECGATEWAY" | awk '{print $3}')
+       arp -s "$GETIPSECGATEWAY" "$GETIPSECGATEWAYMAC"
+   fi
 else
     : # dummy
 fi
@@ -1726,7 +1734,7 @@ dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
 printf "\033[1;31mHave a nice day with IPsec and OpenVPN\033[0m\n"
 ###
 #
-/bin/rm -rf "$EASYIPSECNETSTATOVPN"
+#HUHU /bin/rm -rf "$EASYIPSECNETSTATOVPN"
 #
 ### // new default gateway ###
 
