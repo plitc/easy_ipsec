@@ -1289,7 +1289,7 @@ done
 #
 /bin/echo ""
 
-### initial "route" connection
+### initial "routed" connection
 (
 /bin/ping -q -c2 "$EASYIPSECSERVERIPVALUE" > /dev/null
 )
