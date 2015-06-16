@@ -1469,6 +1469,20 @@ case $IPSECFIREWALL in
      /bin/rm -rf /tmp/easy_ipsec*.txt
      ###
      #
+     sleep 2
+     #
+### DROP // ###
+###/ v4
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+##/ v6
+ip6tables -P INPUT ACCEPT
+ip6tables -P FORWARD ACCEPT
+ip6tables -P OUTPUT ACCEPT
+### // DROP ###
+
+
 ### flush // ###
 ##/ v4
 iptables -F INPUT
@@ -1486,10 +1500,16 @@ ip6tables -t nat -F POSTROUTING
 
 
 ### ALLOW: icmp // ###
+iptables -A INPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 iptables -A OUTPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A OUTPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+if [ $? -eq 0 ]
+then
+   : # dummy
+else
+    iptables -A OUTPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+fi
 iptables -A OUTPUT -p icmp --icmp-type echo-request -j DROP
 ### // ALLOW: icmp ###
 
@@ -1562,11 +1582,13 @@ dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Ne
 OPENVPN=$?
 case $OPENVPN in
   0)
-     /bin/echo ""
+     /bin/echo "" # dummy
+     /bin/echo "" # dummy
 ;;
   1)
-     /bin/echo ""
-     /bin/echo "Have a nice day with IPsec"
+     /bin/echo "" # dummy
+     /bin/echo "" # dummy
+     printf "\033[1;31mHave a nice day with IPsec\033[0m\n"
      ###
      #/ clean up
      /bin/rm -rf /tmp/easy_ipsec*.txt
@@ -1574,7 +1596,8 @@ case $OPENVPN in
      exit 0
 ;;
 255)
-     /bin/echo ""
+     /bin/echo "" # dummy
+     /bin/echo "" # dummy
      /bin/echo "[ESC] key pressed."
 ;;
 esac
