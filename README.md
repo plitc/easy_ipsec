@@ -39,6 +39,22 @@ Features
 ========
 easy ipsec configuration
 
+* MacOS
+  * ipsec connection
+  * openvpn connection (partial support)
+
+* FreeBSD
+  * ipsec connection
+
+* Linux
+  * ipsec connection
+  * openvpn connection
+  * restrictive firewall rules (for ipsec only traffic)
+  * set static/permanent arp entry for the ipsecgatewayip
+
+* Windows
+  * ipsec connection
+
 Platform
 ========
 * Mac OS X 10.8+
