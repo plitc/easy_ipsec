@@ -1464,7 +1464,6 @@ dialog --title "IPsec restrictive Firewall Rules" --backtitle "IPsec restrictive
 IPSECFIREWALL=$?
 case $IPSECFIREWALL in
   0)
-     /bin/echo "" # dummy
      ###
      #/ clean up
      /bin/rm -rf /tmp/easy_ipsec*.txt
