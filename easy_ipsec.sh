@@ -1543,7 +1543,7 @@ iptables -A OUTPUT -m policy --pol ipsec --dir out -j ACCEPT
 
 
 ### info // ###
-iptables -N EASYIPSEC
+iptables -N EASYIPSEC > /dev/null 2>&1
 ### // info ###
 
 
@@ -1704,6 +1704,10 @@ if [ "$CHECKIPSECIPTABLERULES" = "1" ]
 then
     iptables -A INPUT -i "$EASYIPSECOVPNINTERFACE" -j ACCEPT
     iptables -A OUTPUT -o "$EASYIPSECOVPNINTERFACE" -j ACCEPT
+    #/ static ARP
+    GETIPSECGATEWAY=$(netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}')
+    GETIPSECGATEWAYMAC=$(arp -n | grep "$GETIPSECGATEWAY" | awk '{print $3}')
+    arp -s "$GETIPSECGATEWAY" "$GETIPSECGATEWAYMAC"
 else
     : # dummy
 fi
