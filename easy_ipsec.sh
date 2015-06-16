@@ -1542,6 +1542,11 @@ iptables -A OUTPUT -m policy --pol ipsec --dir out -j ACCEPT
 ### // ALLOW: through ipsec ###
 
 
+### info // ###
+iptables -N IPSECOPENVPN
+### // info ###
+
+
 ### DROP // ###
 ##/ v4
 iptables -P INPUT DROP
@@ -1691,6 +1696,20 @@ EASYIPSECOVPNINTERFACE=$(netstat -rn4 | grep "$EASYIPSECOVPNSUBNET" | awk '{prin
 /bin/ip r a 0.0.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
 /bin/ip r a 128.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
 #
+
+### openvpn iptable rules // ##
+#
+CHECKIPSECIPTABLERULES=$(iptables -S | grep -c "IPSECOPENVPN")
+if [ "$CHECKIPSECIPTABLERULES" = "1" ]
+then
+    iptables -A INPUT -i "$EASYIPSECOVPNINTERFACE" -j ACCEPT
+    iptables -A OUTPUT -o "$EASYIPSECOVPNINTERFACE" -j ACCEPT
+else
+    : # dummy
+fi
+#
+### // openvpn iptable rules ###
+
 ###
 /bin/netstat -rn4 > "$EASYIPSECNETSTATOVPN"
 ###
