@@ -1709,7 +1709,9 @@ then
     if [ "$GETIPSECSERVERGATEWAYFORMAT" = "0" ]
     then
        #/ fqdn
-       : # dummy
+       GETIPSECGATEWAYFQDN=$(netstat -r4 | awk '{print $1,$2}' | grep "$(echo "$EASYIPSECSERVERIPVALUE" | cut -c 1,2,3,4,5,6)" | awk '{print $2}')
+       GETIPSECGATEWAYFQDNMAC=$(arp -n | grep "$GETIPSECGATEWAYFQDN" | awk '{print $3}')
+       arp -s "$GETIPSECGATEWAYFQDN" "$GETIPSECGATEWAYFQDNMAC"
     else
        #/ ip address
        GETIPSECGATEWAY=$(netstat -rn4 | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $2}')
