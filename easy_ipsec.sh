@@ -1584,8 +1584,9 @@ EASYIPSECOVPNINTERFACE=$(netstat -rn4 | grep "$EASYIPSECOVPNSUBNET" | awk '{prin
 dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
 #
 ###
-/bin/echo ""
-/bin/echo "Have a nice day with IPsec and OpenVPN"
+/bin/echo "" # dummy
+/bin/echo "" # dummy
+printf "\033[1;31mHave a nice day with IPsec and OpenVPN\033[0m\n"
 ###
 #
 /bin/rm -rf "$EASYIPSECNETSTATOVPN"
