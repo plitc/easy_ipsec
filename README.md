@@ -53,7 +53,7 @@ easy ipsec configuration
   * set static/permanent arp entry for the ipsecgatewayip
 
 * Windows
-  * ipsec connection
+  * ipsec connection but NOT works! (windows ipsec support is only up to dhgroup14)
 
 Platform
 ========
