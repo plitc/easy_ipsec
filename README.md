@@ -60,7 +60,7 @@ Platform
 * Mac OS X 10.8+
 * FreeBSD 10+
 * Linux / Debian 8+
-* Windows 8+
+* Windows 8+ / 10+ (Technical Preview)
 
 Usage
 =====
@@ -94,7 +94,7 @@ Errata
 64 bytes from 172.31.254.254: icmp_seq=4945 ttl=64 time=16 ms
 ```
 
-* 06.06.2015: NAT issues (tcpdump)
+* 06.06.2015: NAT issues? (tcpdump)
 ```
    NONESP-encap: isakmp: phase 1 I ident
    NONESP-encap: isakmp: phase 1 R ident
