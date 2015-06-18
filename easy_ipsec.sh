@@ -1203,6 +1203,50 @@ fi
 /bin/rm -rf /tmp/easy_ipsec*.txt
 )
 
+(
+### clean up - openvpn iptable rules // ##
+#
+CHECKIPSECIPTABLERULES0=$(iptables -S | grep -c "EASYIPSEC")
+if [ "$CHECKIPSECIPTABLERULES0" = "1" ]
+then
+   ### ACCEPT // ###
+   ###/ v4
+   iptables -P INPUT ACCEPT
+   iptables -P FORWARD ACCEPT
+   iptables -P OUTPUT ACCEPT
+   ##/ v6
+   ip6tables -P INPUT ACCEPT
+   ip6tables -P FORWARD ACCEPT
+   ip6tables -P OUTPUT ACCEPT
+   ### // ACCEPT ###
+
+
+   ### flush // ###
+   ##/ v4
+   iptables -F INPUT
+   iptables -F FORWARD
+   iptables -F OUTPUT
+   iptables -t nat -F PREROUTING
+   iptables -t nat -F POSTROUTING
+   ##/ v6
+   ip6tables -F INPUT
+   ip6tables -F FORWARD
+   ip6tables -F OUTPUT
+   ip6tables -t nat -F PREROUTING
+   ip6tables -t nat -F POSTROUTING
+   ### // flush ###
+
+
+   ### info // ###
+   iptables -X EASYIPSEC > /dev/null 2>&1
+   ### // info ###
+else
+   : # dummy
+fi
+#
+### // clean up - openvpn iptable rules ###
+)
+
 ### stage2 // ###
 
 EASYIPSECINTERFACE="/tmp/easy_ipsec_interface.txt"
@@ -1471,7 +1515,7 @@ case $IPSECFIREWALL in
      #
      sleep 2
      #
-### DROP // ###
+### ACCEPT // ###
 ###/ v4
 iptables -P INPUT ACCEPT
 iptables -P FORWARD ACCEPT
@@ -1480,7 +1524,7 @@ iptables -P OUTPUT ACCEPT
 ip6tables -P INPUT ACCEPT
 ip6tables -P FORWARD ACCEPT
 ip6tables -P OUTPUT ACCEPT
-### // DROP ###
+### // ACCEPT ###
 
 
 ### flush // ###
@@ -1621,8 +1665,14 @@ EASYIPSECOVPNCONFIG2="/tmp/easy_ipsec_server_openvpn_config2.txt"
 EASYIPSECOVPNCONFIG3="/tmp/easy_ipsec_server_openvpn_config3.txt"
 EASYIPSECOVPNCONFIG4="/tmp/easy_ipsec_server_openvpn_config4.txt"
 EASYIPSECOVPNCONFIG5="/tmp/easy_ipsec_server_openvpn_config5.txt"
-systemctl --all | grep openvpn | awk '{print $1}' | egrep -v "system" > "$EASYIPSECOVPNCONFIG1"
 
+(
+# clean up - systemctl
+systemctl reset-failed
+sleep 1
+)
+
+systemctl --all | grep openvpn | awk '{print $1}' | egrep -v "system" > "$EASYIPSECOVPNCONFIG1"
 nl "$EASYIPSECOVPNCONFIG1" | sed 's/ //g' > "$EASYIPSECOVPNCONFIG2"
 /bin/sed 's/$/ off/' "$EASYIPSECOVPNCONFIG2" > "$EASYIPSECOVPNCONFIG3"
 
