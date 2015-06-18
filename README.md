@@ -41,7 +41,8 @@ easy ipsec configuration
 
 * MacOS
   * ipsec connection
-  * openvpn connection (partial support)
+  * openvpn connection
+    * (partial support)
 
 * FreeBSD
   * ipsec connection
@@ -49,11 +50,13 @@ easy ipsec configuration
 * Linux
   * ipsec connection
   * openvpn connection
-  * restrictive firewall rules (for ipsec only traffic)
+  * restrictive firewall rules
+    * (for ipsec only traffic)
   * set static/permanent arp entry for the ipsecgatewayip
 
 * Windows
-  * ipsec connection but NOT works! (windows ipsec support is only up to dhgroup14)
+  * ipsec connection but NOT works!
+    * (windows ipsec support is only up to dhgroup14)
 
 Platform
 ========
