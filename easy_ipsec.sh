@@ -1333,10 +1333,11 @@ done
 #
 /bin/echo ""
 
-### initial "routed" connection
+### initial "routed" connection // ###
 (
-/bin/ping -q -c2 "$EASYIPSECSERVERIPVALUE" > /dev/null
+/bin/ping -q -c4 "$EASYIPSECSERVERIPVALUE" > /dev/null
 )
+### // initial "routed" connection ###
 
 /bin/ping -q -c5 "$EASYIPSECSERVERIPVALUE" > /dev/null
 if [ $? -eq 0 ]
