@@ -1343,11 +1343,13 @@ done
 if [ $? -eq 0 ]
 then
       /bin/echo ""
-      /bin/echo "server is responsive"
+      #/ /bin/echo "server is responsive"
+      printf "\033[1;32m[OK]\033[0m server is responsive \n"
       sleep 3
 else
       /bin/echo ""
-      /bin/echo "ERROR: server isn't responsive"
+      #/ /bin/echo "ERROR: server isn't responsive"
+      printf "\033[1;33m[WARNING]\033[0m server isn't responsive \n"
       exit 1
 fi
 
@@ -1473,13 +1475,16 @@ EASYIPSECSERVERTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVERTEST | sed 's/%//g')
 /bin/ping -q -c5 "$EASYIPSECSERVERTESTVALUE" > /dev/null
 if [ $? -eq 0 ]
 then
-      dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "It works!" 0 0
-      : # dummy
-      #/ exit 0
+      #/ dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "It works!" 0 0
+      echo "" # dummy
+      echo "" # dummy
+      printf "\033[1;32m[OK]\033[0m server is responsive \n"
+      sleep 2
 else
-      dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "ERROR: can't ping!" 0 0
-      /bin/echo ""
-      /bin/echo "ERROR: server isn't responsive"
+      #/ dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "ERROR: can't ping!" 0 0
+      echo "" # dummy
+      echo "" # dummy
+      printf "\033[1;33m[WARNING]\033[0m server isn't responsive \n"
       exit 1
 fi
 #)
@@ -1671,6 +1676,8 @@ EASYIPSECOVPNCONFIG5="/tmp/easy_ipsec_server_openvpn_config5.txt"
 # clean up - systemctl
 systemctl reset-failed
 sleep 1
+systemctl daemon-reload
+sleep 1
 )
 
 systemctl --all | grep openvpn | awk '{print $1}' | egrep -v "system" > "$EASYIPSECOVPNCONFIG1"
@@ -1717,11 +1724,16 @@ EASYIPSECSERVEROVPNTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVEROVPNTEST | sed 's/%/
 /bin/ping -q -c5 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null
 if [ $? -eq 0 ]
 then
-      dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "It works!" 0 0
+      #/ dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "It works!" 0 0
+      echo "" # dummy
+      echo "" # dummy
+      printf "\033[1;32m[OK]\033[0m server is responsive \n"
+      sleep 2
 else
-      dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "ERROR: can't ping!" 0 0
-      /bin/echo ""
-      /bin/echo "ERROR: server isn't responsive"
+      #/ dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "ERROR: can't ping!" 0 0
+      echo "" # dummy
+      echo "" # dummy
+      printf "\033[1;33m[WARNING]\033[0m server isn't responsive \n"
       exit 1
 fi
 
