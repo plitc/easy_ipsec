@@ -1549,6 +1549,16 @@ ip6tables -t nat -F POSTROUTING
 ### // flush ###
 
 
+### ALLOW: loopback interface // ###
+##/ v4
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+##/ v6
+ip6tables -A INPUT -i lo -j ACCEPT
+ip6tables -A OUTPUT -o lo -j ACCEPT
+### // ALLOW: loopback interface ###
+
+
 ### ALLOW: icmp // ###
 iptables -A INPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
