@@ -1559,13 +1559,23 @@ ip6tables -A OUTPUT -o lo -j ACCEPT
 ### // ALLOW: loopback interface ###
 
 
-### ALLOW: DHCP // ###
+### ALLOW: (all) DHCP // ###
 iptables -A INPUT -i "$EASYIPSECINTERFACEVALUE" -p udp --dport 67:68 --sport 67:68 -j ACCEPT
 iptables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p udp --dport 67:68 --sport 67:68 -j ACCEPT
-### // ALLOW: DHCP ###
+### // ALLOW: (all) DHCP ###
 
 
-### ALLOW: icmp // ###
+### ALLOW: (all) SSH // ###
+##/ v4
+iptables -A INPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+##/ v6
+ip6tables -A INPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
+ip6tables -A OUTPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+### // ALLOW: (all) SSH ###
+
+
+### ALLOW: (all) icmp // ###
 iptables -A INPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 iptables -A OUTPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
@@ -1577,7 +1587,7 @@ else
     iptables -A OUTPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 fi
 iptables -A OUTPUT -p icmp --icmp-type echo-request -j DROP
-### // ALLOW: icmp ###
+### // ALLOW: (all) icmp ###
 
 
 ### ALLOW: ipsec encapsulation // ###
