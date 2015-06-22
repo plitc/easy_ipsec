@@ -1559,6 +1559,12 @@ ip6tables -A OUTPUT -o lo -j ACCEPT
 ### // ALLOW: loopback interface ###
 
 
+### ALLOW: DHCP // ###
+iptables -A INPUT -i "$EASYIPSECINTERFACEVALUE" -p udp --dport 67:68 --sport 67:68 -j ACCEPT
+iptables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p udp --dport 67:68 --sport 67:68 -j ACCEPT
+### // ALLOW: DHCP ###
+
+
 ### ALLOW: icmp // ###
 iptables -A INPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
