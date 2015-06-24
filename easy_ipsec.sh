@@ -1836,6 +1836,20 @@ then
           ip6tables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p udp --sport 1900 -j ACCEPT
           ip6tables -A INPUT -i "$EASYIPSECINTERFACEVALUE" -p tcp --dport 8200 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
           ip6tables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p tcp --sport 8200 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+          ##/ v4
+          iptables -D INPUT -s 224.0.0.0/4 -j DROP
+          iptables -D INPUT -d 224.0.0.0/4 -j DROP
+          iptables -D INPUT -s 240.0.0.0/5 -j DROP
+          iptables -D INPUT -m pkttype --pkt-type multicast -j DROP
+          iptables -D INPUT -m pkttype --pkt-type broadcast -j DROP
+          iptables -D OUTPUT -s 224.0.0.0/4 -j DROP
+          iptables -D OUTPUT -d 224.0.0.0/4 -j DROP
+          iptables -D OUTPUT -s 240.0.0.0/5 -j DROP
+          iptables -D OUTPUT -m pkttype --pkt-type multicast -j DROP
+          iptables -D OUTPUT -m pkttype --pkt-type broadcast -j DROP
+          ##/ v6
+          ip6tables -D INPUT -m pkttype --pkt-type multicast -j DROP
+          ip6tables -D OUTPUT -m pkttype --pkt-type multicast -j DROP
        fi
     fi
     #/ static ARP
