@@ -1633,6 +1633,24 @@ ip6tables -A OUTPUT -p igmp -j DROP
 ### // DROP: igmp ###
 
 
+### DROP: broadcast/multicast // ###
+##/ v4
+iptables -A INPUT -s 224.0.0.0/4 -j DROP
+iptables -A INPUT -d 224.0.0.0/4 -j DROP
+iptables -A INPUT -s 240.0.0.0/5 -j DROP
+iptables -A INPUT -m pkttype --pkt-type multicast -j DROP
+iptables -A INPUT -m pkttype --pkt-type broadcast -j DROP
+iptables -A OUTPUT -s 224.0.0.0/4 -j DROP
+iptables -A OUTPUT -d 224.0.0.0/4 -j DROP
+iptables -A OUTPUT -s 240.0.0.0/5 -j DROP
+iptables -A OUTPUT -m pkttype --pkt-type multicast -j DROP
+iptables -A OUTPUT -m pkttype --pkt-type broadcast -j DROP
+##/ v6
+ip6tables -A INPUT -m pkttype --pkt-type multicast -j DROP
+ip6tables -A OUTPUT -m pkttype --pkt-type multicast -j DROP
+### // DROP: broadcast/multicast ###
+
+
 ### DROP // ###
 ##/ v4
 iptables -P INPUT DROP
