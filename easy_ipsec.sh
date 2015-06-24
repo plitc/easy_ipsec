@@ -1793,6 +1793,23 @@ if [ "$CHECKIPSECIPTABLERULES" = "1" ]
 then
     iptables -A INPUT -i "$EASYIPSECOVPNINTERFACE" -j ACCEPT
     iptables -A OUTPUT -o "$EASYIPSECOVPNINTERFACE" -j ACCEPT
+    #/ check minidlna
+    CHECKIPSECOVPNMINIDLNA=$(dpkg -l | grep -c "minidlna")
+    if [ "$CHECKIPSECOVPNMINIDLNA" = "1" ]
+    then
+       CHECKIPSECOVPNMINIDLNASERVICE=$(systemctl status minidlna | grep -c "running")
+       if [ "$CHECKIPSECOVPNMINIDLNASERVICE" = "1" ]
+       then
+          iptables -A INPUT -i "$EASYIPSECINTERFACEVALUE" -p udp --dport 1900 -j ACCEPT
+          iptables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p udp --sport 1900 -j ACCEPT
+          iptables -A INPUT -i "$EASYIPSECINTERFACEVALUE" -p tcp --dport 8200 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+          iptables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p tcp --sport 8200 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+          ip6tables -A INPUT -i "$EASYIPSECINTERFACEVALUE" -p udp --dport 1900 -j ACCEPT
+          ip6tables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p udp --sport 1900 -j ACCEPT
+          ip6tables -A INPUT -i "$EASYIPSECINTERFACEVALUE" -p tcp --dport 8200 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+          ip6tables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p tcp --sport 8200 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+       fi
+    fi
     #/ static ARP
     GETIPSECSERVERGATEWAYFORMAT=$(echo "$EASYIPSECSERVERIPVALUE" | grep -cEo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
     if [ "$GETIPSECSERVERGATEWAYFORMAT" = "0" ]
