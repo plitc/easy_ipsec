@@ -1623,6 +1623,16 @@ iptables -N EASYIPSEC > /dev/null 2>&1
 ### // info ###
 
 
+### DROP: igmp // ###
+##/ v4
+iptables -A INPUT -p igmp -j DROP
+iptables -A OUTPUT -p igmp -j DROP
+##/ v6
+ip6tables -A INPUT -p igmp -j DROP
+ip6tables -A OUTPUT -p igmp -j DROP
+### // DROP: igmp ###
+
+
 ### DROP // ###
 ##/ v4
 iptables -P INPUT DROP
