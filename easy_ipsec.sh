@@ -1670,11 +1670,16 @@ ip6tables -P OUTPUT DROP
      #/ clean up
      /bin/rm -rf /tmp/easy_ipsec*.txt
      ###
-     exit 0
 ;;
 255)
      /bin/echo "" # dummy
      /bin/echo "[ESC] key pressed."
+     /bin/echo "" # dummy
+     printf "\033[1;31mIPsec finished\033[0m\n"
+     ###
+     #/ clean up
+     /bin/rm -rf /tmp/easy_ipsec*.txt
+     ###
 ;;
 esac
 #)
