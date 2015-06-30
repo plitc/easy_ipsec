@@ -1089,6 +1089,8 @@ DEBPING=$(/usr/bin/dpkg -l | grep "iputils-ping" | awk '{print $2}')
 DEBDIALOG=$(/usr/bin/which dialog)
 DEBSTRONGSWAN=$(/usr/bin/dpkg -l | grep "strongswan-ikev1" | awk '{print $2}')
 DEBOPENVPN=$(/usr/bin/dpkg -l | grep "openvpn" | awk '{print $2}')
+DEBSPEAK1=$(/usr/bin/dpkg -l | grep "espeak" | awk '{print $2}')
+DEBSPEAK2=$(/usr/bin/dpkg -l | grep "mbrola" | awk '{print $2}')
 #
 #/ spinner
 spinner()
@@ -1198,6 +1200,40 @@ else
    : # dummy
 fi
 
+if [ -z "$DEBSPEAK1" ]; then
+   echo "<--- --- --->"
+   echo "need espeak"
+   echo "<--- --- --->"
+   # (
+        apt-get update
+        apt-get -y install espeak
+   # )
+   echo "<--- --- --->"
+   ### break // ###
+   #/ echo ""
+   #/ read "Press [Enter] key to continue..."
+   ### // break ###
+else
+   : # dummy
+fi
+
+if [ -z "$DEBSPEAK2" ]; then
+   echo "<--- --- --->"
+   echo "need mbrola"
+   echo "<--- --- --->"
+   # (
+        apt-get update
+        apt-get -y install mbrola mbrola-us1 mbrola-us2 mbrola-us3
+   # )
+   echo "<--- --- --->"
+   ### break // ###
+   #/ echo ""
+   #/ read "Press [Enter] key to continue..."
+   ### // break ###
+else
+   : # dummy
+fi
+
 (
 # clean up
 /bin/rm -rf /tmp/easy_ipsec*.txt
@@ -1251,6 +1287,8 @@ fi
 
 EASYIPSECINTERFACE="/tmp/easy_ipsec_interface.txt"
 touch $EASYIPSECINTERFACE
+
+/bin/su -m pulse -c 'espeak -v mb-us1 "choose your public transport interface: (for example wlan0)"' > /dev/null 2>&1 &
 dialog --inputbox "choose your public transport interface: (for example wlan0)" 8 70 2>$EASYIPSECINTERFACE
 
 EASYIPSECINTERFACEVALUE=$(sed 's/#//g' $EASYIPSECINTERFACE | sed 's/%//g')
@@ -1267,10 +1305,14 @@ fi
 
 EASYIPSECCLIENTIP="/tmp/easy_ipsec_client_ip.txt"
 touch $EASYIPSECCLIENTIP
+
+/bin/su -m pulse -c 'espeak -v mb-us1 "Enter your Roadwarrior Client IP: (for example 10.0.0.1)"' > /dev/null 2>&1 &
 dialog --inputbox "Enter your Roadwarrior Client IP: (for example 10.0.0.1)" 8 40 2>$EASYIPSECCLIENTIP
 
 EASYIPSECDESTNET="/tmp/easy_ipsec_destination_net.txt"
 touch $EASYIPSECDESTNET
+
+/bin/su -m pulse -c 'espeak -v mb-us1 "Enter your VPN destination network: (for example 172.31.254.0)"' > /dev/null 2>&1 &
 dialog --inputbox "Enter your VPN destination network: (for example 172.31.254.0)" 8 40 2>$EASYIPSECDESTNET
 
 EASYIPSECCLIENTIPVALUE=$(sed 's/#//g' $EASYIPSECCLIENTIP | sed 's/%//g')
@@ -1299,11 +1341,13 @@ done
 EASYIPSECSERVERIP="/tmp/easy_ipsec_server_ip.txt"
 touch $EASYIPSECSERVERIP
 
+/bin/su -m pulse -c 'espeak -v mb-us1 "Enter your VPN IPsec Server IP:"' > /dev/null 2>&1 &
 dialog --inputbox "Enter your VPN IPsec Server IP:" 8 40 2>$EASYIPSECSERVERIP
 
 EASYIPSECLOCALGATEWAY="/tmp/easy_ipsec_local_gateway.txt"
 touch $EASYIPSECLOCALGATEWAY
 
+/bin/su -m pulse -c 'espeak -v mb-us1 "Enter your local gateway IP:"' > /dev/null 2>&1 &
 dialog --inputbox "Enter your local gateway IP:" 8 40 2>$EASYIPSECLOCALGATEWAY
 
 EASYIPSECSERVERIPVALUE=$(sed 's/#//g' $EASYIPSECSERVERIP | sed 's/%//g')
@@ -1344,11 +1388,13 @@ if [ $? -eq 0 ]
 then
       /bin/echo ""
       #/ /bin/echo "server is responsive"
+      /bin/su -m pulse -c 'espeak -v mb-us1 "server is responsive"' > /dev/null 2>&1 &
       printf "\033[1;32m[OK]\033[0m server is responsive \n"
       sleep 3
 else
       /bin/echo ""
       #/ /bin/echo "ERROR: server isn't responsive"
+      /bin/su -m pulse -c 'espeak -v mb-us1 "server is not responsive"' > /dev/null 2>&1 &
       printf "\033[1;33m[WARNING]\033[0m server isn't responsive \n"
       exit 1
 fi
@@ -1411,6 +1457,7 @@ EASYIPSECSERVERPSK="/tmp/easy_ipsec_server_psk.txt"
 touch $EASYIPSECSERVERPSK
 /bin/chmod 0600 $EASYIPSECSERVERPSK
 
+/bin/su -m pulse -c 'espeak -v mb-us1 "Enter your VPN IPsec Server Pre-shared key: (without spaces and pound)"' > /dev/null 2>&1 &
 dialog --inputbox "Enter your VPN IPsec Server Pre-shared key: (without spaces and pound)" 8 85 2>$EASYIPSECSERVERPSK
 
 EASYIPSECSERVERPSKVALUE=$(sed 's/#//g' $EASYIPSECSERVERPSK | sed 's/%//g')
@@ -1432,6 +1479,7 @@ else
    CHECKATTRIPSECSECRETS=$(lsattr /etc/ipsec.secrets | awk '{print $1}' | grep -c "i")
    if [ "$CHECKATTRIPSECSECRETS" = "1" ]; then
       echo "" # dummy
+      /bin/su -m pulse -c 'espeak -v mb-us1 "WARNING your ipsec.secrets file has an immutable flag!"' > /dev/null 2>&1 &
       printf "\033[1;31m[WARNING] /etc/ipsec.secrets has immutable flag!\033[0m\n"
       echo "" # dummy
       sleep 4
@@ -1468,6 +1516,7 @@ EASYIPSECSERVERTEST="/tmp/easy_ipsec_server_test.txt"
 touch $EASYIPSECSERVERTEST
 /bin/chmod 0600 $EASYIPSECSERVERTEST
 
+/bin/su -m pulse -c 'espeak -v mb-us1 "Enter your VPN IPsec Server forwarding interface IP: (for example 172.31.254.254)"' > /dev/null 2>&1 &
 dialog --inputbox "Enter your VPN IPsec Server forwarding interface IP: (for example 172.31.254.254)" 8 85 2>$EASYIPSECSERVERTEST
 
 EASYIPSECSERVERTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVERTEST | sed 's/%//g')
@@ -1478,12 +1527,14 @@ then
       #/ dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "It works!" 0 0
       echo "" # dummy
       echo "" # dummy
+      /bin/su -m pulse -c 'espeak -v mb-us1 "server is responsive"' > /dev/null 2>&1 &
       printf "\033[1;32m[OK]\033[0m server is responsive \n"
       sleep 2
 else
       #/ dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       echo "" # dummy
       echo "" # dummy
+      /bin/su -m pulse -c 'espeak -v mb-us1 "server is not responsive"' > /dev/null 2>&1 &
       printf "\033[1;33m[WARNING]\033[0m server isn't responsive \n"
       exit 1
 fi
@@ -1509,6 +1560,7 @@ dialog --textbox "$RACOONLOG" 0 0
 ### ipsec iptable rules // ###
 #
 #(
+/bin/su -m pulse -c 'espeak -v mb-us1 "do you want allow (ipv4) ipsec only traffic?"' > /dev/null 2>&1 &
 dialog --title "IPsec restrictive Firewall Rules" --backtitle "IPsec restrictive Firewall Rules" --yesno "do you want allow (ipv4) ipsec only traffic?" 7 70
 
 IPSECFIREWALL=$?
@@ -1691,6 +1743,7 @@ esac
 ### ipsec/openvpn relay setup // ###
 #
 #(
+/bin/su -m pulse -c 'espeak -v mb-us1 "if you have an IPsec/OpenVPN Relay Server-Setup Go ahead!"' > /dev/null 2>&1 &
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --yesno "if you have an IPsec/OpenVPN Relay Server-Setup Go ahead!" 7 70
 
 OPENVPN=$?
@@ -1718,6 +1771,7 @@ esac
 #)
 #
 (
+/bin/su -m pulse -c 'espeak -v mb-us1 "its time now to establish a successful connection! ... than press OK"' > /dev/null 2>&1 &
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "its time now to establish a successful connection! ... than press OK" 8 80
 )
 #
@@ -1743,6 +1797,7 @@ systemctl --all | grep openvpn | awk '{print $1}' | egrep -v "system" > "$EASYIP
 nl "$EASYIPSECOVPNCONFIG1" | sed 's/ //g' > "$EASYIPSECOVPNCONFIG2"
 /bin/sed 's/$/ off/' "$EASYIPSECOVPNCONFIG2" > "$EASYIPSECOVPNCONFIG3"
 
+/bin/su -m pulse -c 'espeak -v mb-us1 "Choose one OpenVPN Service:"' > /dev/null 2>&1 &
 dialog --radiolist "Choose one OpenVPN Service:" 45 80 60 --file "$EASYIPSECOVPNCONFIG3" 2>"$EASYIPSECOVPNCONFIG4"
 list1=$?
 case $list1 in
@@ -1776,6 +1831,7 @@ EASYIPSECSERVEROVPNTEST="/tmp/easy_ipsec_server_openvpn_test.txt"
 touch $EASYIPSECSERVEROVPNTEST
 /bin/chmod 0600 $EASYIPSECSERVEROVPNTEST
 
+/bin/su -m pulse -c 'espeak -v mb-us1 "Enter your VPN OpenVPN Server forwarding interface IP: (for example 172.31.253.1)"' > /dev/null 2>&1 &
 dialog --inputbox "Enter your VPN OpenVPN Server forwarding interface IP: (for example 172.31.253.1)" 8 85 2>$EASYIPSECSERVEROVPNTEST
 
 EASYIPSECSERVEROVPNTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVEROVPNTEST | sed 's/%//g')
@@ -1786,12 +1842,14 @@ then
       #/ dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "It works!" 0 0
       echo "" # dummy
       echo "" # dummy
+      /bin/su -m pulse -c 'espeak -v mb-us1 "server is responsive"' > /dev/null 2>&1 &
       printf "\033[1;32m[OK]\033[0m server is responsive \n"
       sleep 2
 else
       #/ dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       echo "" # dummy
       echo "" # dummy
+      /bin/su -m pulse -c 'espeak -v mb-us1 "server is not responsive"' > /dev/null 2>&1 &
       printf "\033[1;33m[WARNING]\033[0m server isn't responsive \n"
       exit 1
 fi
@@ -1806,6 +1864,7 @@ EASYIPSECNETSTATOVPN="/tmp/easy_ipsec_server_openvpn_netstat.txt"
 touch $EASYIPSECNETSTATOVPN
 /bin/chmod 0600 $EASYIPSECNETSTATOVPN
 #
+/bin/su -m pulse -c 'espeak -v mb-us1 "it seems to work, lets change the default gateway!"' > /dev/null 2>&1 &
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "it seems to work, lets change the default gateway!" 8 70
 #
 #/ /sbin/route del default > /dev/null 2>&1
@@ -1896,6 +1955,7 @@ dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
 ###
 /bin/echo "" # dummy
 /bin/echo "" # dummy
+/bin/su -m pulse -c 'espeak -v mb-us1 "Have a nice day with Internet Protocol Security and OpenVPN"' > /dev/null 2>&1 &
 printf "\033[1;31mHave a nice day with IPsec and OpenVPN\033[0m\n"
 ###
 #
