@@ -53,6 +53,9 @@ easy ipsec configuration
   * restrictive firewall rules
     * (for ipsec only traffic)
   * set static/permanent arp entry for the ipsecgatewayip
+  * restart (local):
+    * minidlna service
+    * unbound service
 
 * Windows
   * ipsec connection but NOT works!

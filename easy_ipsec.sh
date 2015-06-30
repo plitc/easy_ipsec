@@ -1857,6 +1857,16 @@ then
           ip6tables -D OUTPUT -m pkttype --pkt-type multicast -j DROP
        fi
     fi
+    #/ check local unbound
+    CHECKIPSECOVPNUNBOUND=$(dpkg -l | grep -c "unbound")
+    if [ "$CHECKIPSECOVPNUNBOUND" = "1" ]
+    then
+       CHECKIPSECOVPNUNBOUNDSERVICE=$(systemctl status unbound | grep -c "running")
+       if [ "$CHECKIPSECOVPNUNBOUNDSERVICE" = "1" ]
+       then
+          systemctl restart unbound
+       fi
+    fi
     #/ static ARP
     GETIPSECSERVERGATEWAYFORMAT=$(echo "$EASYIPSECSERVERIPVALUE" | grep -cEo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
     if [ "$GETIPSECSERVERGATEWAYFORMAT" = "0" ]
