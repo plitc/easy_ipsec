@@ -27,6 +27,8 @@ Dependencies
 
 * Linux
    * [dialog](https://packages.debian.org/stretch/dialog)
+   * [espeak](https://packages.debian.org/stretch/espeak)
+   * [mbrola](https://packages.debian.org/stretch/mbrola)
    * [iputils-ping](https://packages.debian.org/stretch/iputils-ping)
    * [strongswan (ikev1)](https://packages.debian.org/stretch/strongswan)
    * [openvpn](https://packages.debian.org/stretch/openvpn)
