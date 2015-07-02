@@ -58,7 +58,13 @@ easy ipsec configuration
   * openvpn connection
   * restrictive firewall rules
     * (for ipsec only traffic)
-  * set static/permanent arp entry for the ipsecgatewayip
+
+|Protocol| v4 | v6 |
+|--------|----|----|
+|        |    |    |
+|        |    |    |
+
+* set static/permanent arp entry for the ipsecgatewayip
   * restart (local):
     * minidlna service
     * unbound service
