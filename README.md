@@ -92,10 +92,15 @@ Usage (for Windows)
 
 Screencast
 ==========
-* github plitc easy_ipsec
+* github plitc easy_ipsec [VERSION: 01.05.2015]
   * freebsd racoon server <-> linux strongswan client
 
 [![github plitc easy_ipsec](https://img.youtube.com/vi/GX6whhD096Y/0.jpg)](https://www.youtube.com/watch?v=GX6whhD096Y)
+
+* github plitc easy_ipsec strongswan openvpn [VERSION: 01.07.2015]
+  * freebsd racoon server <-> linux strongswan client (outside) and openvpn client (inside)
+
+[![github plitc easy_ipsec strongswan openvpn](https://img.youtube.com/vi/Kp3HIMJi3x4/0.jpg)](https://www.youtube.com/watch?v=Kp3HIMJi3x4)
 
 Errata
 ======
