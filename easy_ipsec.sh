@@ -547,7 +547,7 @@ dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Ne
 /usr/sbin/netstat -rn -f inet > "$EASYIPSECNETSTATOVPN1"
 ###
 #
-say 'your default gateway is now "$EASYIPSECSERVEROVPNTESTVALUE"'
+say "your default gateway is now $EASYIPSECSERVEROVPNTESTVALUE" &
 dialog --textbox "$EASYIPSECNETSTATOVPN1" 0 0
 #
 ###
