@@ -78,8 +78,10 @@ easy ipsec configuration
 |         |      |      |
 |openvpn**|ALL   |ALL   |
 
-INFO: *allow only outgoing connections
-INFO: **allow all openvpn traffic
+```
+   *  allow only outgoing connections
+   ** allow all openvpn traffic
+```
 
 * set static/permanent arp entry for the ipsecgatewayip
   * restart (local):
