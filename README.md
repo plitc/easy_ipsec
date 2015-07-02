@@ -59,10 +59,27 @@ easy ipsec configuration
   * restrictive firewall rules
     * (for ipsec only traffic)
 
-|Protocol| v4 | v6 |
-|--------|----|----|
-|        |    |    |
-|        |    |    |
+|Protocol | v4   | v6   |
+|---------|------|------|
+|INPUT    |DROP  |DROP  |
+|FORWARD  |DROP  |DROP  |
+|OUTPUT   |DROP  |DROP  |
+|         |      |      |
+|icmp     |ACCEPT| ---- |
+|icmpv6   | ---- |ACCEPT|
+|dhcp     |ACCEPT| ---- |
+|ssh*     |ACCEPT|ACCEPT|
+|cifs*    |ACCEPT|ACCEPT|
+|udp 500  |ACCEPT|ACCEPT|
+|udp 4500 |ACCEPT|ACCEPT|
+|esp      |ACCEPT|ACCEPT|
+|broadcast|DROP  | ---- |
+|multicast|DROP  |DROP  |
+|         |      |      |
+|openvpn**|ALL   |ALL   |
+
+INFO: *allow only outgoing connections
+INFO: **allow all openvpn traffic
 
 * set static/permanent arp entry for the ipsecgatewayip
   * restart (local):
