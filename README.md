@@ -13,6 +13,10 @@ WARNING
    * laptop 2 with debian linux:
      * local network ip BBB.BBB.BBB.102 - default routing over ISP2 gateway ZZZ.ZZZ.ZZZ.2
 * this limitation comes from the ipsec "main mode" function and the "my_identifier" is address based
+```
+   2015-07-02 12:31:18: ERROR: Expecting IP address type in main mode, but User_FQDN.
+```
+* IKE main mode with PSK allow id type = IP address only.
 
 Dependencies
 ============
