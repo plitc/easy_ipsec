@@ -526,9 +526,12 @@ fi
 
 ### new default gateway // ###
 #
-EASYIPSECNETSTATOVPN="/tmp/easy_ipsec_server_openvpn_netstat.txt"
-touch $EASYIPSECNETSTATOVPN
-/bin/chmod 0600 $EASYIPSECNETSTATOVPN
+EASYIPSECNETSTATOVPN1="/tmp/easy_ipsec_server_openvpn_netstat1.txt"
+touch $EASYIPSECNETSTATOVPN1
+/bin/chmod 0600 $EASYIPSECNETSTATOVPN1
+EASYIPSECNETSTATOVPN2="/tmp/easy_ipsec_server_openvpn_netstat2.txt"
+touch $EASYIPSECNETSTATOVPN2
+/bin/chmod 0600 $EASYIPSECNETSTATOVPN2
 #
 say "it seems to work, lets change the default gateway!" &
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "it seems to work, lets change the default gateway!" 8 70
@@ -541,11 +544,11 @@ dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Ne
 /sbin/route add -net 0.0.0.0/1 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
 #
 ###
-/usr/sbin/netstat -rn -f inet > "$EASYIPSECNETSTATOVPN"
+/usr/sbin/netstat -rn -f inet > "$EASYIPSECNETSTATOVPN1"
 ###
 #
 say 'your default gateway is now "$EASYIPSECSERVEROVPNTESTVALUE"'
-dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
+dialog --textbox "$EASYIPSECNETSTATOVPN1" 0 0
 #
 ###
 /bin/echo ""
@@ -553,7 +556,7 @@ say "Have a nice day with IP security and OpenVPN, good bye" &
 /bin/echo "Have a nice day with IPsec and OpenVPN"
 ###
 #
-/bin/rm -rf "$EASYIPSECNETSTATOVPN"
+/bin/rm -rf "$EASYIPSECNETSTATOVPN1"
 #
 ### // new default gateway ###
 
@@ -1275,6 +1278,12 @@ then
 
    ### info // ###
    iptables -X EASYIPSEC > /dev/null 2>&1
+   ip6tables -X EASYIPSEC > /dev/null 2>&1
+   ###
+   ip6tables -F ICMPv6 > /dev/null 2>&1
+   ip6tables -D INPUT -p ipv6-icmp -j ICMPv6 > /dev/null 2>&1
+   ip6tables -D OUTPUT -p ipv6-icmp -j ACCEPT > /dev/null 2>&1
+   ip6tables -X ICMPv6 > /dev/null 2>&1
    ### // info ###
 else
    : # dummy
@@ -1611,23 +1620,62 @@ ip6tables -A OUTPUT -o lo -j ACCEPT
 ### // ALLOW: loopback interface ###
 
 
-### ALLOW: (all) DHCP // ###
+### ALLOW: from any to me DHCP // ###
 iptables -A INPUT -i "$EASYIPSECINTERFACEVALUE" -p udp --dport 67:68 --sport 67:68 -j ACCEPT
 iptables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p udp --dport 67:68 --sport 67:68 -j ACCEPT
-### // ALLOW: (all) DHCP ###
+### // ALLOW: from any to me DHCP ###
 
 
-### ALLOW: (all) SSH // ###
+### ALLOW: Internet Protocol v6 ICMP // ###
+ip6tables -N ICMPv6
+ip6tables -A INPUT -i "$EASYIPSECINTERFACEVALUE" -p icmpv6 -j ICMPv6
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type echo-request -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type destination-unreachable -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type packet-too-big -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type time-exceeded -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type parameter-problem -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type router-solicitation -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type router-advertisement -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type neighbour-solicitation -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type neighbour-advertisement -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type redirect -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 141 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 142 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 148 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 149 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 130 -s fe80::/10 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 131 -s fe80::/10 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 132 -s fe80::/10 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 143 -s fe80::/10 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 151 -s fe80::/10 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 152 -s fe80::/10 -j ACCEPT
+ip6tables -A ICMPv6 -p icmpv6 --icmpv6-type 153 -s fe80::/10 -j ACCEPT
+ip6tables -A ICMPv6 -j RETURN
+ip6tables -A OUTPUT -o "$EASYIPSECINTERFACEVALUE" -p icmpv6 -j ACCEPT
+### // ALLOW: Internet Protocol v6 ICMP ###
+
+
+### ALLOW: from me to any SSH // ###
 ##/ v4
-iptables -A INPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT -p tcp --sport 22 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 ##/ v6
-ip6tables -A INPUT -p tcp --sport 22 -m state --state ESTABLISHED -j ACCEPT
-ip6tables -A OUTPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
-### // ALLOW: (all) SSH ###
+ip6tables -A INPUT -p tcp --sport 22 -m state --state ESTABLISHED,RELATED -j ACCEPT
+ip6tables -A OUTPUT -p tcp --dport 22 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+### // ALLOW: from me to any SSH ###
 
 
-### ALLOW: (all) icmp // ###
+### ALLOW: from me to any SMB/CIFS // ###
+##/ v4
+iptables -A INPUT -p tcp --sport 445 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 445 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+##/ v6
+ip6tables -A INPUT -p tcp --sport 445 -m state --state ESTABLISHED,RELATED -j ACCEPT
+ip6tables -A OUTPUT -p tcp --dport 445 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+### // ALLOW: from me to any SMB/CIFS ###
+
+
+### ALLOW: from any to any ICMP // ###
 iptables -A INPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 iptables -A INPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 iptables -A OUTPUT -p icmp --icmp-type 0 -s 0/0 -d 0/0 -m state --state ESTABLISHED,RELATED -j ACCEPT
@@ -1639,10 +1687,11 @@ else
     iptables -A OUTPUT -p icmp --icmp-type 8 -s 0/0 -d 0/0 -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
 fi
 iptables -A OUTPUT -p icmp --icmp-type echo-request -j DROP
-### // ALLOW: (all) icmp ###
+### // ALLOW: from any to any ICMP ###
 
 
 ### ALLOW: ipsec encapsulation // ###
+##/ v4
 ##/ IKE negotiations
 iptables -A INPUT  -p udp --sport 500 --dport 500 -j ACCEPT
 iptables -A OUTPUT -p udp --sport 500 --dport 500 -j ACCEPT
@@ -1652,6 +1701,19 @@ iptables -A OUTPUT -p udp --sport 4500 --dport 4500 -j ACCEPT
 ##/ ESP encrypton and authentication
 iptables -A INPUT  -p 50 -j ACCEPT
 iptables -A OUTPUT -p 50 -j ACCEPT
+##/ uncomment for AH authentication header
+#/ iptables -A INPUT  -p 51 -j ACCEPT
+#/ iptables -A OUTPUT -p 51 -j ACCEPT
+##/ v6
+##/ IKE negotiations
+ip6tables -A INPUT  -p udp --sport 500 --dport 500 -j ACCEPT
+ip6tables -A OUTPUT -p udp --sport 500 --dport 500 -j ACCEPT
+##/ IKE negotiations over nat
+#/ iptables -A INPUT  -p udp --sport 4500 --dport 4500 -j ACCEPT
+#/ iptables -A OUTPUT -p udp --sport 4500 --dport 4500 -j ACCEPT
+##/ ESP encrypton and authentication
+ip6tables -A INPUT  -p 50 -j ACCEPT
+ip6tables -A OUTPUT -p 50 -j ACCEPT
 ##/ uncomment for AH authentication header
 #/ iptables -A INPUT  -p 51 -j ACCEPT
 #/ iptables -A OUTPUT -p 51 -j ACCEPT
@@ -1672,6 +1734,7 @@ iptables -A OUTPUT -m policy --pol ipsec --dir out -j ACCEPT
 
 ### info // ###
 iptables -N EASYIPSEC > /dev/null 2>&1
+ip6tables -N EASYIPSEC > /dev/null 2>&1
 ### // info ###
 
 
@@ -1860,9 +1923,12 @@ fi
 
 ### new default gateway // ###
 #
-EASYIPSECNETSTATOVPN="/tmp/easy_ipsec_server_openvpn_netstat.txt"
-touch $EASYIPSECNETSTATOVPN
-/bin/chmod 0600 $EASYIPSECNETSTATOVPN
+EASYIPSECNETSTATOVPN1="/tmp/easy_ipsec_server_openvpn_netstat1.txt"
+touch $EASYIPSECNETSTATOVPN1
+/bin/chmod 0600 $EASYIPSECNETSTATOVPN1
+EASYIPSECNETSTATOVPN2="/tmp/easy_ipsec_server_openvpn_netstat2.txt"
+touch $EASYIPSECNETSTATOVPN2
+/bin/chmod 0600 $EASYIPSECNETSTATOVPN2
 #
 /bin/su -m pulse -c 'espeak -v mb-us1 "it seems to work, lets change the default gateway!"' > /dev/null 2>&1 &
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "it seems to work, lets change the default gateway!" 8 70
@@ -1883,8 +1949,12 @@ EASYIPSECOVPNINTERFACE=$(netstat -rn4 | grep "$EASYIPSECOVPNSUBNET" | awk '{prin
 CHECKIPSECIPTABLERULES=$(iptables -S | grep -c "EASYIPSEC")
 if [ "$CHECKIPSECIPTABLERULES" = "1" ]
 then
+    ##/ v4
     iptables -A INPUT -i "$EASYIPSECOVPNINTERFACE" -j ACCEPT
     iptables -A OUTPUT -o "$EASYIPSECOVPNINTERFACE" -j ACCEPT
+    ##/ v6
+    ip6tables -A INPUT -i "$EASYIPSECOVPNINTERFACE" -j ACCEPT
+    ip6tables -A OUTPUT -o "$EASYIPSECOVPNINTERFACE" -j ACCEPT
     #/ check minidlna
     CHECKIPSECOVPNMINIDLNA=$(dpkg -l | grep -c "minidlna")
     if [ "$CHECKIPSECOVPNMINIDLNA" = "1" ]
@@ -1947,10 +2017,12 @@ fi
 ### // openvpn iptable rules ###
 
 ###
-/bin/netstat -rn4 > "$EASYIPSECNETSTATOVPN"
+/bin/netstat -rn4 > "$EASYIPSECNETSTATOVPN1"
+/bin/netstat -rn6 > "$EASYIPSECNETSTATOVPN2"
 ###
 #
-dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
+dialog --textbox "$EASYIPSECNETSTATOVPN1" 0 0
+dialog --textbox "$EASYIPSECNETSTATOVPN2" 0 0
 #
 ###
 /bin/echo "" # dummy
@@ -1959,7 +2031,7 @@ dialog --textbox "$EASYIPSECNETSTATOVPN" 0 0
 printf "\033[1;31mHave a nice day with IPsec and OpenVPN\033[0m\n"
 ###
 #
-#HUHU /bin/rm -rf "$EASYIPSECNETSTATOVPN"
+#HUHU /bin/rm -rf "$EASYIPSECNETSTATOVPN1"
 #
 ### // new default gateway ###
 
