@@ -1993,7 +1993,10 @@ then
        CHECKIPSECOVPNUNBOUNDSERVICE=$(systemctl status unbound | grep -c "running")
        if [ "$CHECKIPSECOVPNUNBOUNDSERVICE" = "1" ]
        then
-          systemctl restart unbound
+          #/ systemctl restart unbound
+          systemctl stop unbound
+          sleep 2
+          systemctl start unbound
        fi
     fi
     #/ static ARP
