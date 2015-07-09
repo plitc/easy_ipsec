@@ -13,6 +13,10 @@ WARNING
    * laptop 2 with debian linux:
      * local network ip BBB.BBB.BBB.102 - default routing over ISP2 gateway ZZZ.ZZZ.ZZZ.2
 * this limitation comes from the ipsec "main mode" function and the "my_identifier" is address based
+```
+   2015-07-02 12:31:18: ERROR: Expecting IP address type in main mode, but User_FQDN.
+```
+* IKE main mode with PSK allow id type = IP address only.
 
 Dependencies
 ============
@@ -54,7 +58,32 @@ easy ipsec configuration
   * openvpn connection
   * restrictive firewall rules
     * (for ipsec only traffic)
-  * set static/permanent arp entry for the ipsecgatewayip
+
+|Protocol | v4   | v6   |
+|---------|------|------|
+|INPUT    |DROP  |DROP  |
+|FORWARD  |DROP  |DROP  |
+|OUTPUT   |DROP  |DROP  |
+|         |      |      |
+|icmp     |ACCEPT| ---- |
+|icmpv6   | ---- |ACCEPT|
+|dhcp     |ACCEPT| ---- |
+|ssh*     |ACCEPT|ACCEPT|
+|cifs*    |ACCEPT|ACCEPT|
+|udp 500  |ACCEPT|ACCEPT|
+|udp 4500 |ACCEPT|ACCEPT|
+|esp      |ACCEPT|ACCEPT|
+|broadcast|DROP  | ---- |
+|multicast|DROP  |DROP  |
+|         |      |      |
+|openvpn**|ALL   |ALL   |
+
+```
+   *  allow only outgoing connections
+   ** allow all openvpn traffic
+```
+
+* set static/permanent arp entry for the ipsecgatewayip
   * restart (local):
     * minidlna service
     * unbound service
@@ -88,10 +117,15 @@ Usage (for Windows)
 
 Screencast
 ==========
-* github plitc easy_ipsec
+* github plitc easy_ipsec [VERSION: 01.05.2015]
   * freebsd racoon server <-> linux strongswan client
 
 [![github plitc easy_ipsec](https://img.youtube.com/vi/GX6whhD096Y/0.jpg)](https://www.youtube.com/watch?v=GX6whhD096Y)
+
+* github plitc easy_ipsec strongswan openvpn [VERSION: 01.07.2015]
+  * freebsd racoon server <-> linux strongswan client (outside) and openvpn client (inside)
+
+[![github plitc easy_ipsec strongswan openvpn](https://img.youtube.com/vi/Kp3HIMJi3x4/0.jpg)](https://www.youtube.com/watch?v=Kp3HIMJi3x4)
 
 Errata
 ======
