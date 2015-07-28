@@ -1938,7 +1938,8 @@ dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Ne
 /sbin/route del -net 0.0.0.0/1 > /dev/null 2>&1
 #
 EASYIPSECOVPNSUBNET=$(echo "$EASYIPSECSERVEROVPNTESTVALUE" | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.' | sed 's/$/0/')
-EASYIPSECOVPNINTERFACE=$(netstat -rn4 | grep "$EASYIPSECOVPNSUBNET" | awk '{print $8}')
+EASYIPSECOVPNSUBNETSMALL=$(echo "$EASYIPSECSERVEROVPNTESTVALUE" | grep -Eo '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+EASYIPSECOVPNINTERFACE=$(netstat -rn4 | grep "$EASYIPSECOVPNSUBNETSMALL" | head -n1 | awk '{print $8}')
 /bin/ip r a "$EASYIPSECSERVEROVPNTESTVALUE"/32 dev "$EASYIPSECOVPNINTERFACE"
 /bin/ip r a 0.0.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
 /bin/ip r a 128.0.0/1 via "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null 2>&1
