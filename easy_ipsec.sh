@@ -1175,7 +1175,7 @@ if [ -z "$DEBSTRONGSWAN" ]; then
    echo "<--- --- --->"
    # (
         apt-get update
-        apt-get -y install strongswan-ikev1
+        apt-get -y install strongswan strongswan-ikev1
    # )
    echo "<--- --- --->"
    ### break // ###
