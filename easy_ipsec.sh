@@ -292,7 +292,7 @@ timer   # timing options. change as needed
         counter         5;
         interval        20 sec;
         persend         1;
-        natt_keepalive  15 sec;
+        natt_keepalive  20 sec;
         phase1          120 sec;
         phase2          60 sec;
 }
@@ -820,7 +820,7 @@ timer   # timing options. change as needed
         counter         5;
         interval        20 sec;
         persend         1;
-        natt_keepalive  15 sec;
+        natt_keepalive  20 sec;
         phase1          120 sec;
         phase2          60 sec;
 }
