@@ -129,6 +129,11 @@ Screencast
 
 Errata
 ======
+* 22.08.2015: FQDN policy resolving problems
+```
+ipsec[7812]: 08[IKE] IDir 'IP' does not match to 'FQDN'
+```
+
 * 14.06.2015: interruption after ~1h 15 min
 ```
 64 bytes from 172.31.254.254: icmp_seq=4931 ttl=64 time=18 ms

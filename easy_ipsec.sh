@@ -1425,8 +1425,8 @@ config setup
 conn %default
      ikelifetime=10m
      keylife=5m
-     rekeymargin=2m
-     keyingtries=2
+     rekeymargin=1m
+     keyingtries=1
      keyexchange=ikev1
 
 conn roadwarrior
