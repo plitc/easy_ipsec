@@ -129,7 +129,7 @@ Screencast
 
 Errata
 ======
-* 04.10.2015: MacOS X Tunnelblick add useless route for openvpn routing (routing is broken!)
+* 04.10.2015: MacOS X Tunnelblick add useless route for openvpn routing (without removal routing is broken!)
 
 * 22.08.2015: FQDN policy resolving problems
 ```
