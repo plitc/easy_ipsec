@@ -129,6 +129,8 @@ Screencast
 
 Errata
 ======
+* 04.10.2015: MacOS X Tunnelblick add useless route for openvpn routing (routing is broken!)
+
 * 22.08.2015: FQDN policy resolving problems
 ```
 ipsec[7812]: 08[IKE] IDir 'IP' does not match to 'FQDN'
