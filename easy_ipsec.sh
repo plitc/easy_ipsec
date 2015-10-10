@@ -82,6 +82,11 @@ fi
 /bin/rm -rf /tmp/easy_ipsec*.txt
 )
 
+#/ function: say clean up
+KILLSAY(){
+   pgrep "say" | xargs -L 1 -I % kill -9 % > /dev/null 2>&1
+}
+
 ### stage2 // ###
 
 GIF1=50
@@ -106,12 +111,14 @@ done
 EASYIPSECCLIENTIP="/tmp/easy_ipsec_client_ip.txt"
 touch $EASYIPSECCLIENTIP
 
+KILLSAY > /dev/null 2>&1
 say "Enter your Roadwarrior Client IP: for example 10.0.0.1" &
 dialog --inputbox "Enter your Roadwarrior Client IP: (for example 10.0.0.1)" 8 40 2>$EASYIPSECCLIENTIP
 
 EASYIPSECDESTNET="/tmp/easy_ipsec_destination_net.txt"
 touch $EASYIPSECDESTNET
 
+KILLSAY > /dev/null 2>&1
 say "Enter your VPN destination network: for example 172.31.254.0" &
 dialog --inputbox "Enter your VPN destination network: (for example 172.31.254.0)" 8 40 2>$EASYIPSECDESTNET
 
@@ -140,12 +147,14 @@ done
 EASYIPSECSERVERIP="/tmp/easy_ipsec_server_ip.txt"
 touch $EASYIPSECSERVERIP
 
+KILLSAY > /dev/null 2>&1
 say "Enter your VPN IP security Server IP:" &
 dialog --inputbox "Enter your VPN IPsec Server IP:" 8 40 2>$EASYIPSECSERVERIP
 
 EASYIPSECLOCALGATEWAY="/tmp/easy_ipsec_local_gateway.txt"
 touch $EASYIPSECLOCALGATEWAY
 
+KILLSAY > /dev/null 2>&1
 say "Enter your local gateway IP:" &
 dialog --inputbox "Enter your local gateway IP:" 8 40 2>$EASYIPSECLOCALGATEWAY
 
@@ -182,12 +191,14 @@ done
 if [ $? -eq 0 ]
 then
       /bin/echo ""
+      KILLSAY > /dev/null 2>&1
       say "well, server is responsive" &
       /bin/echo "server is responsive"
       sleep 3
       # exit 0
 else
       /bin/echo ""
+      KILLSAY > /dev/null 2>&1
       say "excuse me if have got an error: IP security server isn't responsive" &
       /bin/echo "ERROR: IPsec server isn't responsive"
       exit 1
@@ -202,7 +213,7 @@ fi
 
 ### modify /etc/racoon/setkey.conf //
 #
-(
+#(
 EASYIPSECGETIFIP=$(/usr/sbin/netstat -rn -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $6}' | xargs -L1 ifconfig | grep -w "inet" | awk '{print $2}')
 
 /bin/cat <<SETKEY > /etc/racoon/setkey.conf
@@ -221,7 +232,7 @@ spdadd $EASYIPSECDESTNETVALUE/24 $EASYIPSECCLIENTIPVALUE/32 any -P in ipsec
 ### ### ### // PLITC ### ### ###
 # EOF
 SETKEY
-)
+#)
 #
 /bin/chmod 0600 /etc/racoon/setkey.conf
 #
@@ -229,11 +240,12 @@ SETKEY
 
 ### modify /etc/racoon/psk.txt //
 #
-(
+#(
 EASYIPSECSERVERPSK="/tmp/easy_ipsec_server_psk.txt"
 touch $EASYIPSECSERVERPSK
 /bin/chmod 0600 $EASYIPSECSERVERPSK
 
+KILLSAY > /dev/null 2>&1
 say "Enter your VPN IP security Server Pre-shared key: without spaces and pound" &
 dialog --inputbox "Enter your VPN IPsec Server Pre-shared key: (without spaces and pound)" 8 85 2>$EASYIPSECSERVERPSK
 
@@ -260,7 +272,7 @@ PSK
 
 /bin/chmod 0600 /etc/racoon/psk.txt
 /bin/rm $EASYIPSECSERVERPSK
-)
+#)
 #
 ### // modify /etc/racoon/psk.txt
 
@@ -268,7 +280,7 @@ PSK
 #
 EASYIPSECGETIFIPCONF=$(/usr/sbin/netstat -rn -f inet | grep "$EASYIPSECSERVERIPVALUE" | awk '{print $6}' | xargs -L1 ifconfig | grep -w "inet" | awk '{print $2}')
 #
-(
+#(
 /bin/cat <<CONF > /etc/racoon/racoon.conf
 ### ### ### PLITC ### ### ###
 #
@@ -286,7 +298,7 @@ padding # options are not to be changed
         strict_check    off;
         exclusive_tail  off;
 }
- 
+
 timer   # timing options. change as needed
 {
         counter         5;
@@ -296,7 +308,7 @@ timer   # timing options. change as needed
         phase1          120 sec;
         phase2          60 sec;
 }
- 
+
 listen  # address [port] that racoon will listening on
 {
 #
@@ -328,9 +340,9 @@ remote $EASYIPSECSERVERIPVALUE
         generate_policy off;
 
         nat_traversal   force;
-	dpd_delay 30;
-	dpd_retry 10;
-	dpd_maxfail 10;
+        dpd_delay 30;
+        dpd_retry 10;
+        dpd_maxfail 10;
 
                         proposal {
                                 dh_group                16;
@@ -355,7 +367,7 @@ sainfo (address $EASYIPSECCLIENTIPVALUE/32 any address $EASYIPSECDESTNETVALUE/24
 ### ### ### ### ### ### ### ### ###
 # EOF
 CONF
-)
+#)
 #
 /bin/chmod 0600 /etc/racoon/racoon.conf
 #
@@ -363,7 +375,8 @@ CONF
 
 ### start ipsec //
 #
-(
+#(
+KILLSAY > /dev/null 2>&1
 say "syslog can be very slow, do you want delete all system logs before ?" &
 dialog --title "Delete all System-Logs" --backtitle "Delete all System-Logs" --yesno "syslog can be very slow, do you want delete all system logs before ?" 7 60
 
@@ -393,10 +406,11 @@ esac
 #/ sleep 1
 #/ launchctl load /System/Library/LaunchDaemons/com.apple.racoon.plist
 #
-)
+#)
 #
-(
+#(
 /bin/echo ""
+KILLSAY > /dev/null 2>&1
 say "Starting IP security" &
 /bin/echo "Starting IPsec"
 /usr/sbin/setkey -f /etc/racoon/setkey.conf
@@ -408,20 +422,22 @@ sleep 1
 /bin/launchctl start com.apple.racoon
 sleep 1
 /bin/echo ""
+KILLSAY > /dev/null 2>&1
 say "wait a minute please" &
 /bin/echo "prepare racoon log ... wait a minute"
 /bin/echo ""
 sleep 15
-)
+#)
 #
 /usr/bin/syslog -k Facility -k Sender racoon | tail -n 100 | grep "established" > /tmp/easy_ipsec_racoon_log.txt
 #
 RACOONLOG="/tmp/easy_ipsec_racoon_log.txt"
 #
-(
+#(
+KILLSAY > /dev/null 2>&1
 say "VPN Logfile" &
 dialog --textbox "$RACOONLOG" 0 0
-)
+#)
 #
 ### // start ipsec
 
@@ -432,6 +448,7 @@ EASYIPSECSERVERTEST="/tmp/easy_ipsec_server_test.txt"
 touch $EASYIPSECSERVERTEST
 /bin/chmod 0600 $EASYIPSECSERVERTEST
 
+KILLSAY > /dev/null 2>&1
 say "Enter your VPN IP security Server forwarding interface IP: for example 172.31.254.254" &
 dialog --inputbox "Enter your VPN IPsec Server forwarding interface IP: (for example 172.31.254.254)" 8 85 2>$EASYIPSECSERVERTEST
 
@@ -440,12 +457,14 @@ EASYIPSECSERVERTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVERTEST | sed 's/%//g')
 /sbin/ping -q -c5 "$EASYIPSECSERVERTESTVALUE" > /dev/null
 if [ $? -eq 0 ]
 then
+      KILLSAY > /dev/null 2>&1
       say "It works!" &
       dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "It works!" 0 0
       # exit 0
 else
       dialog --title "VPN IPsec Gateway Test" --backtitle "VPN IPsec Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       /bin/echo ""
+      KILLSAY > /dev/null 2>&1
       say "excuse me if have got an error: IP security server isn't responsive" &
       /bin/echo "ERROR: IPsec server isn't responsive"
       exit 1
@@ -462,6 +481,7 @@ fi
 ### ipsec/openvpn relay setup // ###
 #
 #(
+KILLSAY > /dev/null 2>&1
 say "if you have an IP security/OpenVPN Relay Server-Setup, Go ahead" &
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --yesno "if you have an IPsec/OpenVPN Relay Server-Setup Go ahead!" 7 70
 
@@ -473,6 +493,7 @@ case $OPENVPN in
    1)
       /bin/echo ""
       #/bin/echo "no thanks!"
+      KILLSAY > /dev/null 2>&1
       say "Have a nice day with IP security, good bye" &
       /bin/echo "Have a nice day with IPsec"
 ###
@@ -488,10 +509,11 @@ case $OPENVPN in
 esac
 #)
 #
-(
+#(
+KILLSAY > /dev/null 2>&1
 say "its time now to establish, manually a successful connection" &
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "its time now to establish a successful connection! ... than press OK" 8 80
-)
+#)
 #
 ### // ipsec/openvpn relay setup ###
 
@@ -501,6 +523,7 @@ EASYIPSECSERVEROVPNTEST="/tmp/easy_ipsec_server_openvpn_test.txt"
 touch $EASYIPSECSERVEROVPNTEST
 /bin/chmod 0600 $EASYIPSECSERVEROVPNTEST
 
+KILLSAY > /dev/null 2>&1
 say "Enter your VPN, OpenVPN Server forwarding interface IP: for example 172.31.253.1" &
 dialog --inputbox "Enter your VPN OpenVPN Server forwarding interface IP: (for example 172.31.253.1)" 8 85 2>$EASYIPSECSERVEROVPNTEST
 
@@ -509,12 +532,14 @@ EASYIPSECSERVEROVPNTESTVALUE=$(sed 's/#//g' $EASYIPSECSERVEROVPNTEST | sed 's/%/
 /sbin/ping -q -c5 "$EASYIPSECSERVEROVPNTESTVALUE" > /dev/null
 if [ $? -eq 0 ]
 then
+      KILLSAY > /dev/null 2>&1
       say "It works!" &
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "It works!" 0 0
       # exit 0
 else
       dialog --title "VPN OpenVPN Gateway Test" --backtitle "VPN OpenVPN Gateway Test" --msgbox "ERROR: can't ping!" 0 0
       /bin/echo ""
+      KILLSAY > /dev/null 2>&1
       say "excuse me if have got an error: OpenVPN server isn't responsive" &
       /bin/echo "ERROR: OpenVPN server isn't responsive"
       exit 1
@@ -533,6 +558,7 @@ EASYIPSECNETSTATOVPN2="/tmp/easy_ipsec_server_openvpn_netstat2.txt"
 touch $EASYIPSECNETSTATOVPN2
 /bin/chmod 0600 $EASYIPSECNETSTATOVPN2
 #
+KILLSAY > /dev/null 2>&1
 say "it seems to work, lets change the default gateway!" &
 dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Network" --msgbox "it seems to work, lets change the default gateway!" 8 70
 #
@@ -547,11 +573,13 @@ dialog --title "IPsec/OpenVPN Relay Network" --backtitle "IPsec/OpenVPN Relay Ne
 /usr/sbin/netstat -rn -f inet > "$EASYIPSECNETSTATOVPN1"
 ###
 #
+KILLSAY > /dev/null 2>&1
 say "your default gateway is now $EASYIPSECSERVEROVPNTESTVALUE" &
 dialog --textbox "$EASYIPSECNETSTATOVPN1" 0 0
 #
 ###
 /bin/echo ""
+KILLSAY > /dev/null 2>&1
 say "Have a nice day with IP security and OpenVPN, good bye" &
 /bin/echo "Have a nice day with IPsec and OpenVPN"
 ###
