@@ -600,7 +600,7 @@ if [ -z "$FRACOON" ]; then
    echo "<--- --- --->"
    ### break // ###
    echo ""
-   read "Press [Enter] key to continue..."
+   read -r "Press [Enter] key to continue..."
    ### // break ###
 else
    echo "" # dummy
@@ -616,7 +616,7 @@ if [ -z "$FOPENVPN" ]; then
    echo "<--- --- --->"
    ### break // ###
    echo ""
-   read "Press [Enter] key to continue..."
+   read -r "Press [Enter] key to continue..."
    ### // break ###
 else
    echo "" # dummy
@@ -1326,7 +1326,7 @@ dialog --inputbox "Enter your VPN destination network: (for example 172.31.254.0
 
 EASYIPSECCLIENTIPVALUE=$(sed 's/#//g' $EASYIPSECCLIENTIP | sed 's/%//g')
 EASYIPSECDESTNETVALUE=$(sed 's/#//g' $EASYIPSECDESTNET | sed 's/%//g')
-OLDINTERFACE=$(/bin/ip a | grep $EASYIPSECCLIENTIPVALUE | awk '{print $5}')
+OLDINTERFACE=$(/bin/ip a | grep "$EASYIPSECCLIENTIPVALUE" | awk '{print $5}')
 
 GIF2=50
 (
@@ -1338,8 +1338,8 @@ echo "set ipsec local subnet address: ($GIF2 percent)"
 echo "XXX"
 #
 ### run //
-/bin/ip addr del $EASYIPSECCLIENTIPVALUE dev $OLDINTERFACE > /dev/null 2>&1
-/bin/ip addr add $EASYIPSECCLIENTIPVALUE/32 dev $EASYIPSECINTERFACEVALUE > /dev/null 2>&1
+/bin/ip addr del "$EASYIPSECCLIENTIPVALUE" dev "$OLDINTERFACE" > /dev/null 2>&1
+/bin/ip addr add "$EASYIPSECCLIENTIPVALUE"/32 dev "$EASYIPSECINTERFACEVALUE" > /dev/null 2>&1
 ### // run
 #
 GIF2=$((GIF2 + 50))
