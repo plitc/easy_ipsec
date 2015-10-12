@@ -251,6 +251,7 @@ dialog --inputbox "Enter your VPN IPsec Server Pre-shared key: (without spaces a
 
 EASYIPSECSERVERPSKVALUE=$(sed 's/#//g' $EASYIPSECSERVERPSK | sed 's/%//g')
 
+echo "" # dummy
 /bin/cat <<PSK > /etc/racoon/psk.txt
 ### ### ### PLITC ### ### ###
 # IPv4/v6 addresses
@@ -269,6 +270,14 @@ $EASYIPSECSERVERIPVALUE $EASYIPSECSERVERPSKVALUE
 ### ### ### PLITC ### ### ###
 # EOF
 PSK
+if [ $? -eq 0 ]
+then
+   : # dummy
+else
+   KILLSAY > /dev/null 2>&1
+   say "Warning, the racoon/psk.txt file probably has a write-protection or immutable flag!" > /dev/null 2>&1 &
+   sleep 2
+fi
 
 /bin/chmod 0600 /etc/racoon/psk.txt
 /bin/rm $EASYIPSECSERVERPSK
