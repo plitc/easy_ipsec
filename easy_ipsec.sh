@@ -84,7 +84,7 @@ fi
 
 #/ function: say clean up
 KILLSAY(){
-   pgrep "say" | xargs -L 1 -I % kill -9 % > /dev/null 2>&1
+   (pgrep "say" | xargs -L 1 -I % kill -9 % > /dev/null 2>&1)
 }
 
 ### stage2 // ###
